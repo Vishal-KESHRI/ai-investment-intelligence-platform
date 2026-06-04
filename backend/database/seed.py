@@ -209,11 +209,15 @@ def seed(db: Session, *, force: bool = False) -> None:
             symbol, name, asset_class, _sector = UNIVERSE[0]
         side = rng.choice(["buy", "sell"])
         price = price_map[symbol] * (1 + rng.uniform(-0.02, 0.02))
-        # Mostly normal trades; a few deliberately large to trip rules.
+        # Size trades by target NOTIONAL (realistic across all asset classes),
+        # then derive quantity from price. This keeps high-priced assets like
+        # BTC sensible (a few BTC, not thousands). A subset are deliberately
+        # large to trip the large-notional / restricted-crypto rules.
         if i % 11 == 0:
-            qty = rng.uniform(2_000, 6_000)
+            target_notional = rng.uniform(600_000, 1_200_000)  # trips NOT-LRG (>$500k)
         else:
-            qty = rng.uniform(5, 800)
+            target_notional = rng.uniform(20_000, 400_000)
+        qty = target_notional / price if price else 0.0
         notional = round(qty * price, 2)
         executed_at = now - timedelta(
             days=rng.randint(0, 14), hours=rng.randint(0, 23), minutes=rng.randint(0, 59)
