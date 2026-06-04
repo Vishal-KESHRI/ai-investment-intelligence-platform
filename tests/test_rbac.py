@@ -20,10 +20,13 @@ def test_matrix_risk():
     assert check_user_permission("risk", "audit_logs")
 
 
-def test_matrix_manager_summary_only():
-    assert check_user_permission("manager", "portfolio_summary")
-    assert not check_user_permission("manager", "trades")
-    assert not check_user_permission("manager", "holdings")
+def test_matrix_manager_full_access():
+    # Project-owner override: manager has access to every resource.
+    for resource in (
+        "portfolio_summary", "holdings", "trades", "market_data",
+        "exposure", "risk_alerts", "audit_logs",
+    ):
+        assert check_user_permission("manager", resource)
 
 
 def test_matrix_intern_minimal():
@@ -60,10 +63,12 @@ def test_risk_user_can_access_risk_alerts(client):
     assert "alerts" in r.json()
 
 
-def test_manager_summary_allowed_but_holdings_denied(client):
+def test_manager_has_full_access(client):
     auth = login(client, "manager@local")
-    assert client.get("/dashboard/summary", headers=auth["headers"]).status_code == 200
-    assert client.get("/dashboard/holdings", headers=auth["headers"]).status_code == 403
+    for path in ("/dashboard/summary", "/dashboard/holdings", "/dashboard/trades",
+                 "/dashboard/risk-alerts"):
+        assert client.get(path, headers=auth["headers"]).status_code == 200, path
+    assert client.get("/audit/logs", headers=auth["headers"]).status_code == 200
 
 
 def test_agent_denial_returns_clean_payload(client):

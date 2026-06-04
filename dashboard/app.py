@@ -226,53 +226,99 @@ def render_trades() -> None:
         denied_banner("Risk alerts are restricted for your role.")
 
 
+EXAMPLE_QUESTIONS = [
+    "What are our top holdings?",
+    "What is our asset allocation?",
+    "Which assets moved the most today?",
+    "Summarize portfolio performance",
+    "Are we overexposed to any asset?",
+    "Which trades are high risk?",
+    "Which trades need review?",
+    "Explain why a trade was flagged",
+]
+
+
+def _call_agent(question: str) -> dict:
+    """Call the backend agent and return a normalized assistant-message dict."""
+    try:
+        r = requests.post(f"{BACKEND_URL}/agent/query", json={"question": question},
+                          headers=_auth_header(), timeout=120)
+    except requests.RequestException as e:
+        return {"role": "assistant", "content": f"Backend unreachable: {e}",
+                "denied": True, "caption": None, "data": None}
+    if r.status_code != 200:
+        return {"role": "assistant", "content": f"Error {r.status_code}: {r.text}",
+                "denied": True, "caption": None, "data": None}
+    res = r.json()
+    denied = res["status"] == "denied"
+    if denied:
+        caption = (f"Routed to {res['agent']} / {res['tool_called']} — "
+                   "this denial is recorded in the audit log.")
+    else:
+        caption = (f"Agent: {res['agent']} · Tool: {res['tool_called']} · "
+                   f"LLM: {res['llm_provider']}")
+    return {"role": "assistant", "content": res["answer"], "denied": denied,
+            "caption": caption, "data": res.get("data")}
+
+
+def _render_message(m: dict) -> None:
+    with st.chat_message(m["role"], avatar="🧑‍💼" if m["role"] == "user" else "🤖"):
+        if m["role"] == "assistant" and m.get("denied"):
+            st.markdown(f'<div class="denied">🔒 {m["content"]}</div>',
+                        unsafe_allow_html=True)
+        else:
+            st.markdown(m["content"])
+        if m.get("caption"):
+            st.caption(m["caption"])
+        if m.get("data"):
+            with st.expander("Tool output (raw data the answer is grounded in)"):
+                st.json(m["data"])
+
+
 def render_ai() -> None:
     st.header("🤖 AI Assistant")
-    st.caption("Ask the Portfolio Analyst or Risk & Compliance agent. "
-               "Answers are generated only from database tool output, gated by your role.")
+    st.caption("Chat with the Portfolio Analyst & Risk agents. Answers come only "
+               "from database tool output, gated by your role.")
 
-    examples = [
-        "What are our top holdings?",
-        "What is our asset allocation?",
-        "Which assets moved the most today?",
-        "Summarize portfolio performance",
-        "Are we overexposed to any asset?",
-        "Which trades are high risk?",
-        "Which trades need review?",
-        "Explain why a trade was flagged",
-    ]
-    cols = st.columns(4)
-    for i, ex in enumerate(examples):
-        if cols[i % 4].button(ex, key=f"ex_{i}", use_container_width=True):
-            st.session_state["question"] = ex
+    st.session_state.setdefault("chat", [])
 
-    question = st.text_input("Your question", value=st.session_state.get("question", ""),
-                             placeholder="e.g. What are our top holdings?")
-    if st.button("Ask", type="primary") and question.strip():
-        with st.spinner("Thinking…"):
-            try:
-                r = requests.post(f"{BACKEND_URL}/agent/query",
-                                  json={"question": question},
-                                  headers=_auth_header(), timeout=60)
-            except requests.RequestException as e:
-                st.error(f"Backend unreachable: {e}")
-                return
-        if r.status_code != 200:
-            st.error(f"Error {r.status_code}: {r.text}")
-            return
-        res = r.json()
-        if res["status"] == "denied":
-            denied_banner(res["answer"])
-            st.caption(f"Routed to: {res['agent']} / {res['tool_called']} — "
-                       "this denial is recorded in the audit log.")
-        else:
-            st.markdown(f'<div class="allowed">{res["answer"]}</div>',
-                        unsafe_allow_html=True)
-            st.caption(f"Agent: **{res['agent']}** · Tool: **{res['tool_called']}** · "
-                       f"LLM: **{res['llm_provider']}**")
-            if res.get("data"):
+    top = st.columns([1, 1, 4])
+    if top[0].button("🗑 Clear chat", use_container_width=True):
+        st.session_state.chat = []
+        st.rerun()
+
+    # Suggested questions (collapsed once a conversation is underway).
+    with st.expander("💡 Example questions", expanded=not st.session_state.chat):
+        cols = st.columns(2)
+        for i, ex in enumerate(EXAMPLE_QUESTIONS):
+            if cols[i % 2].button(ex, key=f"ex_{i}", use_container_width=True):
+                st.session_state.pending_q = ex
+
+    # Render the conversation so far.
+    for m in st.session_state.chat:
+        _render_message(m)
+
+    # New input: from the chat box or a clicked example.
+    typed = st.chat_input("Ask about holdings, allocation, risk, trades…")
+    question = typed or st.session_state.pop("pending_q", None)
+    if question:
+        user_msg = {"role": "user", "content": question}
+        st.session_state.chat.append(user_msg)
+        _render_message(user_msg)
+        with st.chat_message("assistant", avatar="🤖"), st.spinner("Thinking…"):
+            assistant_msg = _call_agent(question)
+            # Render inline now; the history loop will show it on the next run.
+            if assistant_msg.get("denied"):
+                st.markdown(f'<div class="denied">🔒 {assistant_msg["content"]}</div>',
+                            unsafe_allow_html=True)
+            else:
+                st.markdown(assistant_msg["content"])
+            if assistant_msg.get("caption"):
+                st.caption(assistant_msg["caption"])
+            if assistant_msg.get("data"):
                 with st.expander("Tool output (raw data the answer is grounded in)"):
-                    st.json(res["data"])
+                    st.json(assistant_msg["data"])
+        st.session_state.chat.append(assistant_msg)
 
 
 def render_audit() -> None:

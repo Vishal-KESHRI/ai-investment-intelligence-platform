@@ -178,12 +178,14 @@ returns, or a "permission denied" banner on HTTP 403.
 |---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | **analyst** | ✅ | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ |
 | **risk** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **manager** | ✅ | ❌ | ❌ | ❌ | ✅ | ❌ | ✅ |
+| **manager** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | **intern** | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 
-> **Manager = summary-only:** aggregate metrics and exposure yes; raw holdings,
-> raw trade blotter, and detailed risk rules no. Audit oversight is included so
-> managers can review who-asked-what.
+> **Manager = full access** (project-owner override). Note: the original
+> assessment brief specifies a *summary-only* manager; this build grants the
+> manager every resource per request. To restore the brief's behaviour, set
+> `"manager"` back to `{"portfolio_summary", "exposure", "audit_logs"}` in
+> `backend/auth/permissions.py`.
 
 Denied requests return the canonical payload:
 

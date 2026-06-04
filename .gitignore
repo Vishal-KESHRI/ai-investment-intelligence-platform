@@ -29,3 +29,6 @@ env/
 
 # Claude Code local settings
 .claude/
+
+# Local docker override (machine-specific)
+docker-compose.override.yml

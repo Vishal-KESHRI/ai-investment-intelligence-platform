@@ -53,9 +53,9 @@ PERMISSIONS: dict[str, frozenset[str]] = {
             "audit_logs",
         }
     ),
-    # Manager is summary-only: aggregates yes, raw blotter / detailed risk no.
-    # Audit oversight is included (managers review who-asked-what).
-    "manager": frozenset({"portfolio_summary", "exposure", "audit_logs"}),
+    # Manager has FULL access (project-owner override). NOTE: this diverges from
+    # the assessment brief's "summary-only" manager role — kept here per request.
+    "manager": frozenset(RESOURCES),
     # Intern: basic portfolio summary, nothing else.
     "intern": frozenset({"portfolio_summary"}),
 }
