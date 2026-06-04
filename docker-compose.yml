@@ -1,0 +1,58 @@
+# ============================================================
+# ARP Global Capital — full local stack.
+# Start everything with:  docker compose up
+#   backend   -> http://localhost:8000  (FastAPI, /docs for OpenAPI)
+#   dashboard -> http://localhost:8501  (Streamlit)
+#   ollama    -> http://localhost:11434 (local LLM; optional)
+# ============================================================
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: arp-backend
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-sqlite:////app/data/arp.db}
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
+      JWT_ALGORITHM: ${JWT_ALGORITHM:-HS256}
+      JWT_EXPIRE_MINUTES: ${JWT_EXPIRE_MINUTES:-480}
+      LLM_PROVIDER: ${LLM_PROVIDER:-ollama}
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://ollama:11434}
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-qwen2.5:7b}
+      OLLAMA_TIMEOUT_SECONDS: ${OLLAMA_TIMEOUT_SECONDS:-30}
+    volumes:
+      # Persist the SQLite database across restarts.
+      - arp-db:/app/data
+    depends_on:
+      - ollama
+    restart: unless-stopped
+
+  dashboard:
+    build:
+      context: .
+      dockerfile: dashboard/Dockerfile
+    container_name: arp-dashboard
+    ports:
+      - "8501:8501"
+    environment:
+      BACKEND_URL: ${BACKEND_URL:-http://backend:8000}
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: arp-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      # Cache pulled models so they survive restarts.
+      - ollama-models:/root/.ollama
+    restart: unless-stopped
+
+volumes:
+  arp-db:
+  ollama-models:

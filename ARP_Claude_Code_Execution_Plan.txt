@@ -1,0 +1,671 @@
+ARP GLOBAL CAPITAL ASSESSMENT
+CLAUDE CODE EXECUTION PLAN
+==========================
+
+Purpose
+-------
+Use this document as a step-by-step execution plan for Claude Code to build the complete ARP Global Capital Local AI Investment Intelligence Platform.
+
+The goal is to produce a working local project that satisfies the assessment requirements:
+- Local Docker-based execution
+- FastAPI backend
+- SQLite database
+- Streamlit dashboard
+- AI agents with tool calling
+- RBAC
+- Audit logging
+- Basic authentication
+- Clean README
+- Demo-ready project
+
+Expected final command:
+
+docker compose up
+
+============================================================
+DAY 1 - BACKEND, DATABASE, AND DATA SEEDING
+============================================================
+
+Goal:
+Create the backend foundation, database models, seed data, and basic APIs.
+
+Tasks:
+1. Create project structure.
+2. Set up FastAPI application.
+3. Configure SQLite database with SQLAlchemy.
+4. Create models:
+   - User
+   - PortfolioHolding
+   - Trade
+   - MarketPrice
+   - RiskRule
+   - AuditLog
+5. Create seed script using Faker.
+6. Insert mock users:
+   - analyst@local
+   - risk@local
+   - manager@local
+   - intern@local
+7. Insert mock portfolio, trade, market price, and risk rule data.
+8. Create basic dashboard data APIs.
+
+Claude Code Prompt:
+
+Build the backend foundation for this assessment.
+
+Use FastAPI, SQLAlchemy, SQLite, and Pydantic.
+
+Create the following folders:
+
+backend/
+  main.py
+  database/
+    db.py
+    seed.py
+  models/
+    user.py
+    holding.py
+    trade.py
+    market_price.py
+    risk_rule.py
+    audit_log.py
+  schemas/
+    auth.py
+    agent.py
+    dashboard.py
+  api/
+    dashboard.py
+
+Create SQLAlchemy models for:
+- users
+- portfolio_holdings
+- trades
+- market_prices
+- risk_rules
+- audit_logs
+
+Create a seed.py file that generates realistic mock data using Faker.
+
+Create API routes:
+GET /health
+GET /dashboard/summary
+GET /dashboard/holdings
+GET /dashboard/trades
+GET /dashboard/exposure
+GET /dashboard/risk-alerts
+
+Make sure the project runs locally with:
+
+uvicorn backend.main:app --reload
+
+Acceptance Criteria:
+- Backend starts successfully.
+- SQLite database is created.
+- Seed data is inserted.
+- Dashboard APIs return JSON.
+- No secrets are hardcoded.
+
+============================================================
+DAY 2 - AUTHENTICATION AND RBAC
+============================================================
+
+Goal:
+Add JWT/token authentication and enforce role permissions.
+
+Tasks:
+1. Add auth module.
+2. Implement login endpoint.
+3. Generate JWT tokens.
+4. Create permission matrix.
+5. Add reusable permission checker.
+6. Protect dashboard and agent routes.
+7. Deny unauthorized access clearly.
+
+RBAC Matrix:
+
+analyst@local:
+Allowed:
+- portfolio data
+- market data
+Denied:
+- risk alerts
+- audit logs
+
+risk@local:
+Allowed:
+- portfolio data
+- trades
+- risk alerts
+
+manager@local:
+Allowed:
+- summary-only reports
+Denied:
+- raw trades
+- detailed risk rules
+
+intern@local:
+Allowed:
+- basic portfolio summary only
+Denied:
+- trades
+- risk alerts
+- audit logs
+
+Claude Code Prompt:
+
+Add JWT authentication and RBAC to the backend.
+
+Create:
+
+backend/auth/
+  jwt_handler.py
+  permissions.py
+  dependencies.py
+
+Create endpoint:
+
+POST /auth/login
+
+The user can log in with email only for demo purposes.
+
+Users:
+- analyst@local
+- risk@local
+- manager@local
+- intern@local
+
+Return JWT token with email and role.
+
+Implement permission checks before accessing:
+- portfolio_summary
+- holdings
+- trades
+- market_data
+- risk_alerts
+- audit_logs
+
+If a user is denied, return:
+{
+  "status": "denied",
+  "reason": "insufficient permissions"
+}
+
+Make RBAC server-side only. Do not rely on dashboard restrictions.
+
+Acceptance Criteria:
+- Login works.
+- JWT token is required for protected APIs.
+- Analyst cannot access risk alerts.
+- Intern cannot access trades.
+- Risk user can access risk alerts.
+- Manager only receives summary-level data.
+
+============================================================
+DAY 3 - AI AGENTS AND TOOL CALLING
+============================================================
+
+Goal:
+Create AI agents that answer investment questions using database-backed tools.
+
+Tasks:
+1. Create tool layer.
+2. Create portfolio agent.
+3. Create risk agent.
+4. Add agent query endpoint.
+5. Add tool selection logic.
+6. Integrate Ollama if available.
+7. Add fallback mock response if Ollama is unavailable.
+8. Ensure responses are generated only from database results.
+
+Required Tools:
+- get_portfolio_summary()
+- get_recent_trades()
+- get_asset_exposure()
+- get_risk_alerts()
+- check_user_permission()
+
+Portfolio Analyst Agent Questions:
+- What are our top holdings?
+- What is our asset allocation?
+- Which assets moved the most today?
+- Summarize portfolio performance.
+
+Risk & Compliance Agent Questions:
+- Are we overexposed to any asset?
+- Which trades are high risk?
+- Which trades need review?
+- Explain why a trade was flagged.
+
+Claude Code Prompt:
+
+Implement the AI orchestration layer.
+
+Create:
+
+backend/tools/
+  portfolio_tools.py
+  risk_tools.py
+
+backend/agents/
+  portfolio_agent.py
+  risk_agent.py
+  router.py
+
+Implement tools:
+- get_portfolio_summary()
+- get_recent_trades()
+- get_asset_exposure()
+- get_risk_alerts()
+- check_user_permission()
+
+Create POST /agent/query endpoint.
+
+Request body:
+{
+  "question": "What are our top holdings?"
+}
+
+The endpoint should:
+1. Authenticate user.
+2. Identify role.
+3. Select the correct agent.
+4. Select the correct tool.
+5. Check permission.
+6. Query the database.
+7. Generate an answer using Ollama if available.
+8. Fall back to deterministic mock answer if Ollama is unavailable.
+9. Return the answer.
+
+Use this Ollama prompt:
+
+You are an investment operations assistant.
+Use ONLY the provided tool output.
+Do not invent financial data.
+If the tool output does not contain enough information, say so clearly.
+
+Question:
+{question}
+
+Tool Output:
+{tool_result}
+
+Answer:
+
+Acceptance Criteria:
+- Agent answers top holdings from database.
+- Agent answers asset allocation from database.
+- Agent answers high-risk trades from database.
+- Unauthorized questions are denied.
+- No fabricated financial data.
+- Ollama is optional but supported.
+
+============================================================
+DAY 4 - AUDIT LOGGING
+============================================================
+
+Goal:
+Audit every AI interaction, whether allowed or denied.
+
+Tasks:
+1. Create audit logger service.
+2. Log all agent interactions.
+3. Store:
+   - user
+   - role
+   - question
+   - tool_called
+   - allowed_or_denied
+   - timestamp
+4. Create audit API.
+5. Restrict audit logs to allowed roles only.
+6. Show denied attempts too.
+
+Claude Code Prompt:
+
+Implement audit logging for every AI agent interaction.
+
+Create:
+
+backend/audit/
+  logger.py
+
+Every call to POST /agent/query must create an audit log with:
+- user
+- role
+- question
+- tool_called
+- allowed_or_denied
+- timestamp
+
+Create endpoint:
+
+GET /audit/logs
+
+Only allow authorized roles to access it.
+
+Ensure denied requests are also logged.
+
+Acceptance Criteria:
+- Allowed AI questions are logged.
+- Denied AI questions are logged.
+- Audit logs include tool name.
+- Audit logs include timestamp.
+- Audit API returns logs.
+- Unauthorized users cannot view audit logs.
+
+============================================================
+DAY 5 - STREAMLIT DASHBOARD
+============================================================
+
+Goal:
+Create a demo-friendly dashboard.
+
+Tasks:
+1. Build Streamlit frontend.
+2. Add login role selector.
+3. Store token in session state.
+4. Display portfolio summary.
+5. Display charts.
+6. Display AI assistant page.
+7. Display audit logs page.
+8. Show RBAC restrictions clearly.
+
+Dashboard Pages:
+
+1. Portfolio Overview
+- Portfolio allocation chart
+- Asset exposure chart
+- Top holdings table
+
+2. Trades
+- Recent trades table
+- High-risk trades table
+
+3. AI Assistant
+- Role/user selector
+- Question box
+- Response panel
+
+4. Audit Logs
+- Table showing user, role, question, tool, decision, timestamp
+
+Claude Code Prompt:
+
+Create the Streamlit dashboard.
+
+Create:
+
+dashboard/app.py
+
+The dashboard should connect to the FastAPI backend.
+
+Pages:
+1. Portfolio Overview
+2. Trades
+3. AI Assistant
+4. Audit Logs
+
+Features:
+- Login as analyst@local, risk@local, manager@local, or intern@local.
+- Store JWT token in Streamlit session state.
+- Show portfolio allocation pie chart.
+- Show asset exposure bar chart.
+- Show recent trades table.
+- Show risk alerts table when role allows.
+- Provide AI question input.
+- Show AI answer.
+- Show audit logs when role allows.
+- Display permission denied messages clearly.
+
+Use Plotly or Streamlit native charts.
+
+Acceptance Criteria:
+- Dashboard runs.
+- User can log in.
+- Charts render.
+- AI questions work.
+- RBAC behavior is visible.
+- Audit logs visible to authorized user.
+
+============================================================
+DAY 6 - DOCKERIZATION
+============================================================
+
+Goal:
+Make the entire project run with Docker Compose.
+
+Tasks:
+1. Create backend Dockerfile.
+2. Create dashboard Dockerfile if needed.
+3. Create docker-compose.yml.
+4. Add Ollama service.
+5. Add volume for SQLite database.
+6. Add environment variables.
+7. Ensure startup command works.
+
+Claude Code Prompt:
+
+Dockerize the entire project.
+
+Create:
+
+Dockerfile
+docker-compose.yml
+.env.example
+
+Services:
+- backend
+- dashboard
+- ollama
+
+The command must work:
+
+docker compose up
+
+Backend should run on:
+http://localhost:8000
+
+Dashboard should run on:
+http://localhost:8501
+
+Ollama should run on:
+http://localhost:11434
+
+Include environment variables:
+DATABASE_URL
+JWT_SECRET
+OLLAMA_BASE_URL
+
+Do not commit real secrets.
+
+Acceptance Criteria:
+- docker compose up starts backend.
+- docker compose up starts dashboard.
+- dashboard can call backend.
+- backend can call Ollama or gracefully fallback.
+- SQLite persists locally.
+- .env.example exists.
+
+============================================================
+DAY 7 - TESTS AND FINAL README
+============================================================
+
+Goal:
+Add tests and final documentation.
+
+Tasks:
+1. Add pytest configuration.
+2. Add RBAC tests.
+3. Add audit logging tests.
+4. Add AI routing tests.
+5. Add README.
+6. Add demo script.
+7. Add production scaling section.
+8. Add security discussion.
+
+Claude Code Prompt:
+
+Add tests and final documentation.
+
+Create tests:
+
+tests/test_rbac.py
+tests/test_audit.py
+tests/test_agents.py
+
+Test:
+- analyst cannot access risk alerts
+- intern cannot access trades
+- risk user can access risk alerts
+- agent query creates audit log
+- denied query creates audit log
+- portfolio question routes to portfolio tool
+- risk question routes to risk tool
+
+Create README.md with:
+- Project overview
+- Architecture diagram
+- Setup instructions
+- Docker instructions
+- Login users
+- RBAC matrix
+- AI agent explanation
+- Audit logging explanation
+- Security considerations
+- External LLM risk discussion
+- Production scaling plan
+- Demo script
+
+Acceptance Criteria:
+- Tests run with pytest.
+- README is complete.
+- Project can be demonstrated in interview.
+- All assessment points are covered.
+
+============================================================
+FINAL DEMO SCRIPT
+============================================================
+
+1. Start project
+
+docker compose up
+
+2. Open dashboard
+
+http://localhost:8501
+
+3. Login as analyst@local
+
+Ask:
+What are our top holdings?
+
+Expected:
+Allowed response using portfolio data.
+
+4. Still as analyst@local
+
+Ask:
+Which trades are high risk?
+
+Expected:
+Denied due to insufficient permissions.
+
+5. Login as risk@local
+
+Ask:
+Which trades are high risk?
+
+Expected:
+Allowed response using trade and risk data.
+
+6. Login as manager@local
+
+Ask:
+Summarize portfolio performance.
+
+Expected:
+Summary-only answer.
+
+7. Login as intern@local
+
+Ask:
+Show recent trades.
+
+Expected:
+Denied.
+
+8. Open Audit Logs
+
+Show:
+- allowed requests
+- denied requests
+- users
+- roles
+- tools
+- timestamps
+
+============================================================
+FINAL ACCEPTANCE CHECKLIST
+============================================================
+
+The project is assessment-ready only when:
+
+[ ] docker compose up works
+[ ] FastAPI backend starts
+[ ] Streamlit dashboard starts
+[ ] SQLite database is created
+[ ] Mock data is seeded
+[ ] Dashboard charts render
+[ ] AI agent endpoint works
+[ ] Portfolio Analyst Agent works
+[ ] Risk & Compliance Agent works
+[ ] RBAC is enforced
+[ ] Denied requests are handled cleanly
+[ ] Audit logs are created
+[ ] Audit logs show allowed and denied requests
+[ ] Authentication works
+[ ] .env.example is present
+[ ] No secrets are committed
+[ ] Tests exist
+[ ] README is complete
+[ ] Demo script is included
+[ ] Production scaling explanation is included
+
+============================================================
+SECURITY NOTES TO INCLUDE IN README
+============================================================
+
+External LLM Risk:
+External LLM providers may receive sensitive portfolio, trade, or compliance data if prompts are sent outside the organization.
+
+Mitigation:
+- Prefer local LLM using Ollama.
+- Send only tool outputs required for the answer.
+- Apply RBAC before tool calls.
+- Never expose raw data to unauthorized roles.
+- Log every interaction.
+- Validate all inputs.
+- Use environment variables for secrets.
+- Use production-grade secrets management in real deployment.
+
+============================================================
+PRODUCTION SCALING NOTES TO INCLUDE IN README
+============================================================
+
+For production:
+- Replace SQLite with PostgreSQL.
+- Replace local token login with OAuth or SSO.
+- Move Ollama to a dedicated inference service.
+- Add API gateway.
+- Add rate limiting.
+- Add Prometheus and Grafana.
+- Add centralized logs using ELK/OpenSearch.
+- Add Kubernetes deployment.
+- Add CI/CD pipeline.
+- Add encryption at rest and in transit.
+- Add human review workflows for high-risk trades.
+
+============================================================
+END OF CLAUDE CODE EXECUTION PLAN
+============================================================
