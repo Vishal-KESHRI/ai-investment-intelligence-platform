@@ -10,6 +10,7 @@ WORKDIR /app
 COPY dashboard/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+COPY dashboard/.streamlit ./.streamlit
 COPY dashboard/app.py .
 
 RUN useradd --create-home appuser && chown -R appuser /app
