@@ -40,6 +40,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Build backend image
-        run: docker build -t arp-backend -f Dockerfile .
+        run: docker build -t demo-backend -f Dockerfile .
       - name: Build dashboard image
-        run: docker build -t arp-dashboard -f dashboard/Dockerfile .
+        run: docker build -t demo-dashboard -f dashboard/Dockerfile .

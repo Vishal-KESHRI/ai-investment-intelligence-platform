@@ -21,7 +21,7 @@ import abc
 
 # Shared system prompt. The model is constrained to the tool output only.
 SYSTEM_PROMPT = (
-    "You are an investment operations assistant for ARP Global Capital.\n"
+    "You are an investment operations assistant for Demo Capital.\n"
     "Use ONLY the provided tool output. Do not invent financial data.\n"
     "If the tool output does not contain enough information, say so clearly.\n"
     "Be concise, factual, and professional."

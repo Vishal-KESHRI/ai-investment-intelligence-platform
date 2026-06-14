@@ -1,4 +1,4 @@
-"""ARP Global Capital — Streamlit dashboard.
+"""Demo Capital — Streamlit dashboard.
 
 A thin, professional client over the FastAPI backend. It stores a JWT in session
 state and calls the backend for everything; it NEVER decides access itself —
@@ -58,7 +58,7 @@ ASSET_COLORS = {
 }
 
 st.set_page_config(
-    page_title="ARP Global Capital — AI Investment Intelligence",
+    page_title="Demo Capital — AI Investment Intelligence",
     page_icon="📊",
     layout="wide",
     initial_sidebar_state="auto",  # expanded on desktop, auto-collapses on mobile
@@ -338,7 +338,7 @@ def render_login() -> None:
         unsafe_allow_html=True,
     )
     st.markdown(
-        '<div class="brandbar"><span class="dot">📊</span> ARP Global Capital</div>',
+        '<div class="brandbar"><span class="dot">📊</span> Demo Capital</div>',
         unsafe_allow_html=True,
     )
     st.markdown(
@@ -384,7 +384,7 @@ def render_login() -> None:
 
     st.markdown(
         '<div class="landing-foot">FastAPI · SQLite · Streamlit · Ollama · '
-        'Docker — assessment build for ARP Global Capital</div>',
+        'Docker — demo build for Demo Capital</div>',
         unsafe_allow_html=True,
     )
 
@@ -397,7 +397,7 @@ if not st.session_state.token:
 
 # --- Sidebar (authenticated) ----------------------------------------------
 with st.sidebar:
-    st.markdown("## 📊 ARP Global Capital")
+    st.markdown("## 📊 Demo Capital")
     st.caption("Local AI Investment Intelligence")
     st.divider()
 

@@ -32,7 +32,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="ARP Global Capital — Local AI Investment Intelligence Platform",
+    title="Demo Capital — Local AI Investment Intelligence Platform",
     version="1.0.0",
     description=(
         "Locally runnable AI investment-operations platform: secure AI agents "
@@ -70,7 +70,7 @@ def health() -> dict:
 @app.get("/", tags=["system"])
 def root() -> dict:
     return {
-        "service": "ARP Global Capital — Local AI Investment Intelligence Platform",
+        "service": "Demo Capital — Local AI Investment Intelligence Platform",
         "docs": "/docs",
         "health": "/health",
     }

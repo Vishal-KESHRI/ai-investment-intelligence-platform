@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AI Copilot | Demo Capital</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Hanken+Grotesk:wght@600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(21, 25, 33, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(30, 41, 59, 0.5);
+        }
+        .agent-pulse {
+            position: relative;
+        }
+        .agent-pulse::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 2px solid var(--tw-primary);
+            animation: pulse 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+        .flow-line {
+            background: linear-gradient(to bottom, transparent, #3B82F6, transparent);
+            width: 2px;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline": "#8c909f",
+                        "surface-bright": "#363940",
+                        "tertiary-fixed-dim": "#4edea3",
+                        "outline-variant": "#424754",
+                        "surface": "#10131a",
+                        "on-secondary": "#213145",
+                        "on-surface-variant": "#c2c6d6",
+                        "inverse-surface": "#e1e2eb",
+                        "surface-container-lowest": "#0b0e14",
+                        "on-tertiary-fixed": "#002113",
+                        "on-tertiary-fixed-variant": "#005236",
+                        "surface-variant": "#32353c",
+                        "on-tertiary": "#003824",
+                        "on-error": "#690005",
+                        "surface-container-high": "#272a31",
+                        "background": "#10131a",
+                        "on-secondary-fixed-variant": "#38485d",
+                        "inverse-on-surface": "#2e3037",
+                        "primary-container": "#4d8eff",
+                        "primary-fixed-dim": "#adc6ff",
+                        "on-primary-fixed-variant": "#004395",
+                        "secondary": "#b7c8e1",
+                        "on-secondary-container": "#a9bad3",
+                        "secondary-container": "#3a4a5f",
+                        "on-primary": "#002e6a",
+                        "on-surface": "#e1e2eb",
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "primary": "#adc6ff",
+                        "surface-container-low": "#191c22",
+                        "surface-dim": "#10131a",
+                        "surface-container-highest": "#32353c",
+                        "error-container": "#93000a",
+                        "inverse-primary": "#005ac2",
+                        "tertiary": "#4edea3",
+                        "tertiary-fixed": "#6ffbbe",
+                        "on-error-container": "#ffdad6",
+                        "on-background": "#e1e2eb",
+                        "on-primary-container": "#00285d",
+                        "secondary-fixed": "#d3e4fe",
+                        "tertiary-container": "#00a572",
+                        "surface-tint": "#adc6ff",
+                        "on-tertiary-container": "#00311f",
+                        "surface-container": "#1d2026",
+                        "error": "#ffb4ab",
+                        "primary-fixed": "#d8e2ff",
+                        "on-primary-fixed": "#001a42",
+                        "on-secondary-fixed": "#0b1c30"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "container-padding": "24px",
+                        "compact-row": "8px",
+                        "unit": "4px",
+                        "gutter": "16px",
+                        "widget-gap": "12px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Inter"],
+                        "data-mono": ["JetBrains Mono"],
+                        "body-sm": ["Inter"],
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "display-lg": ["Hanken Grotesk"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Hanken Grotesk"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["11px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "data-mono": ["13px", {"lineHeight": "16px", "letterSpacing": "-0.01em", "fontWeight": "500"}],
+                        "body-sm": ["12px", {"lineHeight": "18px", "fontWeight": "400"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-surface text-on-surface font-body-md selection:bg-primary/30 overflow-hidden">
+<!-- Sidebar Component (Anchored) -->
+<aside class="w-[240px] h-full fixed left-0 top-0 flex flex-col border-r border-outline-variant bg-surface-container-lowest backdrop-blur-xl z-50">
+<div class="p-container-padding">
+<h1 class="font-headline-lg text-[20px] font-bold text-primary flex items-center gap-2">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">terminal</span>
+                Demo Capital
+            </h1>
+<p class="font-body-sm text-outline text-[10px] tracking-widest uppercase mt-1">AI Intelligence</p>
+</div>
+<nav class="flex-1 px-2 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-secondary-container transition-colors duration-150 rounded group" href="#">
+<span class="material-symbols-outlined text-[20px]">dashboard</span>
+<span class="font-body-md">Executive Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-secondary-container transition-colors duration-150 rounded" href="#">
+<span class="material-symbols-outlined text-[20px]">analytics</span>
+<span class="font-body-md">Portfolio Analytics</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-primary font-bold border-r-2 border-primary bg-secondary-container/30" href="#">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+<span class="font-body-md">AI Copilot</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-secondary-container transition-colors duration-150 rounded" href="#">
+<span class="material-symbols-outlined text-[20px]">query_stats</span>
+<span class="font-body-md">Trades Monitoring</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-secondary-container transition-colors duration-150 rounded" href="#">
+<span class="material-symbols-outlined text-[20px]">security</span>
+<span class="font-body-md">Risk &amp; Compliance</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-secondary-container transition-colors duration-150 rounded" href="#">
+<span class="material-symbols-outlined text-[20px]">history_edu</span>
+<span class="font-body-md">Audit Logs</span>
+</a>
+</nav>
+<div class="mt-auto p-4 border-t border-outline-variant space-y-2">
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-secondary-container transition-colors duration-150 rounded" href="#">
+<span class="material-symbols-outlined text-[20px]">help</span>
+<span class="font-body-md">Support</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-secondary-container transition-colors duration-150 rounded" href="#">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+<span class="font-body-md">Settings</span>
+</a>
+</div>
+</aside>
+<!-- Top Navigation -->
+<header class="flex justify-between items-center w-full px-container-padding h-16 ml-[240px] w-[calc(100%-240px)] sticky top-0 bg-surface/80 backdrop-blur-md border-b border-outline-variant z-40">
+<div class="flex items-center gap-4">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">search</span>
+<input class="bg-surface-container-lowest border border-outline-variant rounded-full py-1.5 pl-10 pr-4 text-body-sm w-80 focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all" placeholder="Search commands or data..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<button class="text-on-surface-variant hover:text-primary transition-opacity flex items-center gap-2">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-opacity flex items-center gap-2">
+<span class="material-symbols-outlined">hub</span>
+</button>
+<div class="flex items-center gap-3 pl-4 border-l border-outline-variant">
+<div class="text-right">
+<p class="font-body-sm font-bold text-on-surface">Alex Mercer</p>
+<p class="text-[10px] text-outline uppercase tracking-wider">Sr. Quantitative Strategist</p>
+</div>
+<span class="material-symbols-outlined text-[32px] text-primary">account_circle</span>
+</div>
+</div>
+</header>
+<!-- Main Content Area: 3-Column Layout -->
+<main class="ml-[240px] h-[calc(100vh-64px)] flex overflow-hidden">
+<!-- Column 1: History/Prompts -->
+<section class="w-72 flex flex-col border-r border-outline-variant bg-surface-container-low/50">
+<div class="p-4 border-b border-outline-variant flex justify-between items-center">
+<h3 class="font-label-caps text-on-surface-variant">Conversation History</h3>
+<span class="material-symbols-outlined text-outline cursor-pointer hover:text-primary">add_box</span>
+</div>
+<div class="flex-1 overflow-y-auto p-2 space-y-1">
+<div class="p-3 bg-secondary-container/20 border-l-2 border-primary rounded-r-lg cursor-pointer">
+<p class="text-body-sm font-medium text-on-surface truncate">Portfolio Exposure Analysis</p>
+<p class="text-[10px] text-outline mt-1">2 hours ago</p>
+</div>
+<div class="p-3 hover:bg-surface-variant/50 rounded cursor-pointer transition-colors group">
+<p class="text-body-sm text-on-surface-variant truncate">Hedge Optimization Logic</p>
+<p class="text-[10px] text-outline mt-1">Yesterday</p>
+</div>
+<div class="p-3 hover:bg-surface-variant/50 rounded cursor-pointer transition-colors">
+<p class="text-body-sm text-on-surface-variant truncate">Risk VaR Calculation - Q4</p>
+<p class="text-[10px] text-outline mt-1">Nov 14, 2023</p>
+</div>
+<div class="p-3 hover:bg-surface-variant/50 rounded cursor-pointer transition-colors">
+<p class="text-body-sm text-on-surface-variant truncate">Liquidity Stress Tests</p>
+<p class="text-[10px] text-outline mt-1">Nov 12, 2023</p>
+</div>
+</div>
+<div class="p-4 border-t border-outline-variant">
+<h3 class="font-label-caps text-on-surface-variant mb-3 uppercase text-[10px]">Suggested Queries</h3>
+<div class="space-y-2">
+<button class="w-full text-left p-2 text-[11px] bg-surface-container border border-outline-variant rounded hover:border-primary transition-colors text-outline-variant group">
+<span class="text-on-surface group-hover:text-primary">"Analyze alpha decay in..."</span>
+</button>
+<button class="w-full text-left p-2 text-[11px] bg-surface-container border border-outline-variant rounded hover:border-primary transition-colors text-outline-variant group">
+<span class="text-on-surface group-hover:text-primary">"Recalculate margin for..."</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Column 2: Chat Interface & Orchestration Flow -->
+<section class="flex-1 flex flex-col bg-surface relative">
+<!-- Flow Visualization Overlays (Animated in background) -->
+<div class="flex-1 overflow-y-auto p-8 relative">
+<!-- Chat Message: User -->
+<div class="flex justify-end mb-8">
+<div class="max-w-[80%] glass-panel rounded-xl p-4 border-l-4 border-primary shadow-lg">
+<p class="text-body-md text-on-surface">Generate a comprehensive exposure report for the Global Tech portfolio relative to the NASDAQ-100 benchmark. Highlight any sector concentrations exceeding 15% and suggest hedging options for high-beta constituents.</p>
+<div class="flex justify-end mt-2">
+<span class="text-[10px] text-outline font-data-mono">14:02:11 GMT-5</span>
+</div>
+</div>
+</div>
+<!-- Orchestration Flow Visualization -->
+<div class="flex flex-col items-center my-12 space-y-6">
+<div class="flex items-center gap-3 bg-primary/10 border border-primary/30 px-4 py-2 rounded-full animate-pulse">
+<span class="material-symbols-outlined text-primary text-[18px]">psychology</span>
+<span class="font-label-caps text-primary">Intent Detected: Portfolio Optimization</span>
+</div>
+<div class="w-px h-12 flow-line"></div>
+<!-- Orchestration Nodes -->
+<div class="grid grid-cols-4 gap-8 w-full max-w-2xl">
+<div class="flex flex-col items-center gap-2 group">
+<div class="w-12 h-12 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center group-hover:border-tertiary transition-colors">
+<span class="material-symbols-outlined text-tertiary">support_agent</span>
+</div>
+<span class="text-[10px] font-label-caps text-outline">Agent Selected</span>
+</div>
+<div class="flex flex-col items-center gap-2 group">
+<div class="w-12 h-12 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center group-hover:border-primary transition-colors">
+<span class="material-symbols-outlined text-primary">build</span>
+</div>
+<span class="text-[10px] font-label-caps text-outline">Tool Call</span>
+</div>
+<div class="flex flex-col items-center gap-2 group">
+<div class="w-12 h-12 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center group-hover:border-error transition-colors">
+<span class="material-symbols-outlined text-error">database</span>
+</div>
+<span class="text-[10px] font-label-caps text-outline">SQL Query</span>
+</div>
+<div class="flex flex-col items-center gap-2 group">
+<div class="w-12 h-12 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center group-hover:border-secondary transition-colors">
+<span class="material-symbols-outlined text-secondary">model_training</span>
+</div>
+<span class="text-[10px] font-label-caps text-outline">Generation</span>
+</div>
+</div>
+</div>
+<!-- Chat Message: AI Agent -->
+<div class="flex justify-start mb-8">
+<div class="max-w-[90%] glass-panel rounded-xl p-6 border-l-4 border-tertiary shadow-xl relative overflow-hidden">
+<div class="absolute top-0 right-0 p-2">
+<span class="material-symbols-outlined text-tertiary/20 text-6xl">smart_toy</span>
+</div>
+<div class="flex items-center gap-3 mb-4">
+<div class="w-8 h-8 rounded bg-tertiary/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary text-[20px]" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+</div>
+<h4 class="font-headline-lg text-[16px] text-on-surface">Exposure Analysis Complete</h4>
+</div>
+<div class="space-y-4">
+<p class="text-body-md text-on-surface-variant">I have cross-referenced the Global Tech portfolio (ID: GT-882) against the NQ100. Key findings indicate a concentrated position in Semiconductor Manufacturing reaching 18.2%.</p>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-surface-container-lowest p-3 rounded border border-outline-variant">
+<p class="font-label-caps text-outline text-[10px]">Active Risk</p>
+<p class="font-data-mono text-tertiary text-lg">+142 bps</p>
+</div>
+<div class="bg-surface-container-lowest p-3 rounded border border-outline-variant">
+<p class="font-label-caps text-outline text-[10px]">Predicted Volatility</p>
+<p class="font-data-mono text-error text-lg">22.4% <span class="text-[10px] text-outline font-normal">↑ 1.2%</span></p>
+</div>
+</div>
+<div class="mt-4 overflow-hidden rounded border border-outline-variant">
+<table class="w-full text-left text-body-sm">
+<thead class="bg-surface-variant/50 font-label-caps text-outline">
+<tr>
+<th class="p-2">Security</th>
+<th class="p-2">Weight</th>
+<th class="p-2">Beta</th>
+<th class="p-2">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<tr>
+<td class="p-2 font-data-mono">NVDA.US</td>
+<td class="p-2 font-data-mono">7.4%</td>
+<td class="p-2 font-data-mono">1.82</td>
+<td class="p-2"><span class="px-1.5 py-0.5 rounded-full text-[9px] bg-error/10 text-error border border-error/20">Overweight</span></td>
+</tr>
+<tr>
+<td class="p-2 font-data-mono">ASML.NA</td>
+<td class="p-2 font-data-mono">4.1%</td>
+<td class="p-2 font-data-mono">1.35</td>
+<td class="p-2"><span class="px-1.5 py-0.5 rounded-full text-[9px] bg-tertiary/10 text-tertiary border border-tertiary/20">Neutral</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="text-body-sm text-on-surface-variant italic">Suggested Action: Purchase put options on NDX 15-DEC-23 @ 15800 strike to neutralize delta exposure.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Input Console -->
+<div class="p-6 border-t border-outline-variant bg-surface-container-lowest">
+<div class="relative group">
+<textarea class="w-full glass-panel border border-outline-variant rounded-xl p-4 pr-16 focus:border-primary focus:ring-1 focus:ring-primary outline-none text-body-md resize-none transition-all placeholder:text-outline/50" placeholder="Ask anything about the funds, market risk, or trade execution..." rows="2"></textarea>
+<button class="absolute right-4 bottom-4 w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-on-primary hover:bg-primary-container transition-all active:scale-95 shadow-lg">
+<span class="material-symbols-outlined">send</span>
+</button>
+<div class="absolute right-16 bottom-5 flex gap-2">
+<span class="material-symbols-outlined text-outline hover:text-primary cursor-pointer text-[20px]">attach_file</span>
+<span class="material-symbols-outlined text-outline hover:text-primary cursor-pointer text-[20px]">mic</span>
+</div>
+</div>
+<div class="flex gap-4 mt-3">
+<div class="flex items-center gap-1.5">
+<div class="w-2 h-2 rounded-full bg-tertiary shadow-[0_0_8px_rgba(78,222,163,0.6)]"></div>
+<span class="text-[10px] font-label-caps text-tertiary">Copilot Engine Online</span>
+</div>
+<div class="flex items-center gap-1.5">
+<div class="w-2 h-2 rounded-full bg-primary/40"></div>
+<span class="text-[10px] font-label-caps text-outline">GTP-4o Reasoning</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Column 3: Tool Execution Logs -->
+<section class="w-80 flex flex-col border-l border-outline-variant bg-surface-container-low/50">
+<div class="p-4 border-b border-outline-variant flex items-center justify-between">
+<h3 class="font-label-caps text-on-surface-variant uppercase text-[11px]">System Trace</h3>
+<span class="text-[10px] font-data-mono text-outline">v2.4.1-stable</span>
+</div>
+<div class="flex-1 overflow-y-auto p-4 space-y-6">
+<!-- Log Entry Group -->
+<div class="space-y-3">
+<p class="text-[10px] font-label-caps text-outline border-b border-outline-variant/30 pb-1">09:42:15 AM ET</p>
+<div class="flex gap-3">
+<div class="flex flex-col items-center">
+<div class="w-6 h-6 rounded-full bg-tertiary/10 border border-tertiary flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary text-[14px]">check_circle</span>
+</div>
+<div class="w-px flex-1 bg-outline-variant my-1"></div>
+</div>
+<div class="pb-4">
+<span class="px-1.5 py-0.5 rounded text-[9px] bg-secondary-container text-on-secondary-container font-medium">Portfolio Agent</span>
+<p class="text-[11px] text-on-surface mt-1">Successfully fetched GT-882 holdings from Core-API.</p>
+<p class="text-[10px] font-data-mono text-outline mt-1">Status 200: 42 records.</p>
+</div>
+</div>
+<div class="flex gap-3">
+<div class="flex flex-col items-center">
+<div class="w-6 h-6 rounded-full bg-primary/10 border border-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-[14px]">verified_user</span>
+</div>
+<div class="w-px flex-1 bg-outline-variant my-1"></div>
+</div>
+<div class="pb-4">
+<span class="px-1.5 py-0.5 rounded text-[9px] bg-secondary-container text-on-secondary-container font-medium">RBAC Verification</span>
+<p class="text-[11px] text-on-surface mt-1">Permission Verified: ACCESS_FUND_DETAILS_SENSITIVE</p>
+<p class="text-[10px] font-data-mono text-outline mt-1">Auth-Token: 7zX...k9L</p>
+</div>
+</div>
+<div class="flex gap-3">
+<div class="flex flex-col items-center">
+<div class="w-6 h-6 rounded-full bg-error/10 border border-error flex items-center justify-center">
+<span class="material-symbols-outlined text-error text-[14px]">warning</span>
+</div>
+<div class="w-px flex-1 bg-outline-variant my-1"></div>
+</div>
+<div class="pb-4">
+<span class="px-1.5 py-0.5 rounded text-[9px] bg-secondary-container text-on-secondary-container font-medium">Risk Agent</span>
+<p class="text-[11px] text-on-surface mt-1">Margin breach detected in correlated currency pair USD/JPY.</p>
+<p class="text-[10px] font-data-mono text-error mt-1">Level: 4 (Critical)</p>
+</div>
+</div>
+<div class="flex gap-3">
+<div class="flex flex-col items-center">
+<div class="w-6 h-6 rounded-full bg-surface-variant border border-outline-variant flex items-center justify-center animate-spin">
+<span class="material-symbols-outlined text-outline text-[14px]">sync</span>
+</div>
+</div>
+<div class="pb-4">
+<span class="px-1.5 py-0.5 rounded text-[9px] bg-secondary-container text-on-secondary-container font-medium">Strategy Gen</span>
+<p class="text-[11px] text-on-surface mt-1">Compiling hedging recommendations...</p>
+<div class="w-full bg-outline-variant h-1 mt-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[65%] animate-pulse"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Live Market Feed Card -->
+<div class="glass-panel p-3 rounded-lg border-l-2 border-secondary shadow-inner">
+<div class="flex items-center justify-between mb-2">
+<span class="text-[9px] font-label-caps text-secondary">Real-time Stream</span>
+<span class="material-symbols-outlined text-secondary text-[14px]">sensors</span>
+</div>
+<div class="space-y-2 font-data-mono text-[10px]">
+<div class="flex justify-between">
+<span class="text-on-surface-variant">NDX:CME</span>
+<span class="text-tertiary">15,821.40 ↑</span>
+</div>
+<div class="flex justify-between">
+<span class="text-on-surface-variant">US10Y:TBY</span>
+<span class="text-error">4.421% ↓</span>
+</div>
+<div class="flex justify-between">
+<span class="text-on-surface-variant">VIX:CBOE</span>
+<span class="text-tertiary">13.84 ↓</span>
+</div>
+</div>
+</div>
+</div>
+<div class="p-4 bg-surface-container-highest/30">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">analytics</span>
+</div>
+<div>
+<p class="text-[11px] font-bold text-on-surface">Data Latency</p>
+<p class="text-[10px] text-tertiary font-data-mono">14ms (P99)</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Contextual FAB (Hidden as per relevance rule for chat) -->
+<script>
+        // Simple micro-interactions
+        document.querySelectorAll('.group').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                el.style.transform = 'translateY(-1px)';
+            });
+            el.addEventListener('mouseleave', () => {
+                el.style.transform = 'translateY(0)';
+            });
+        });
+        
+        // Input pulse effect
+        const textarea = document.querySelector('textarea');
+        textarea.addEventListener('focus', () => {
+            textarea.parentElement.classList.add('ring-2', 'ring-primary/20');
+        });
+        textarea.addEventListener('blur', () => {
+            textarea.parentElement.classList.remove('ring-2', 'ring-primary/20');
+        });
+    </script>
+</body></html>

@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Demo Capital - RBAC Matrix</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500&amp;family=Hanken+Grotesk:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline": "#8c909f",
+                        "surface-bright": "#363940",
+                        "tertiary-fixed-dim": "#4edea3",
+                        "outline-variant": "#424754",
+                        "surface": "#10131a",
+                        "on-secondary": "#213145",
+                        "on-surface-variant": "#c2c6d6",
+                        "inverse-surface": "#e1e2eb",
+                        "surface-container-lowest": "#0b0e14",
+                        "on-tertiary-fixed": "#002113",
+                        "on-tertiary-fixed-variant": "#005236",
+                        "surface-variant": "#32353c",
+                        "on-tertiary": "#003824",
+                        "on-error": "#690005",
+                        "surface-container-high": "#272a31",
+                        "background": "#10131a",
+                        "on-secondary-fixed-variant": "#38485d",
+                        "inverse-on-surface": "#2e3037",
+                        "primary-container": "#4d8eff",
+                        "primary-fixed-dim": "#adc6ff",
+                        "on-primary-fixed-variant": "#004395",
+                        "secondary": "#b7c8e1",
+                        "on-secondary-container": "#a9bad3",
+                        "secondary-container": "#3a4a5f",
+                        "on-primary": "#002e6a",
+                        "on-surface": "#e1e2eb",
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "primary": "#adc6ff",
+                        "surface-container-low": "#191c22",
+                        "surface-dim": "#10131a",
+                        "surface-container-highest": "#32353c",
+                        "error-container": "#93000a",
+                        "inverse-primary": "#005ac2",
+                        "tertiary": "#4edea3",
+                        "tertiary-fixed": "#6ffbbe",
+                        "on-error-container": "#ffdad6",
+                        "on-background": "#e1e2eb",
+                        "on-primary-container": "#00285d",
+                        "secondary-fixed": "#d3e4fe",
+                        "tertiary-container": "#00a572",
+                        "surface-tint": "#adc6ff",
+                        "on-tertiary-container": "#00311f",
+                        "surface-container": "#1d2026",
+                        "error": "#ffb4ab",
+                        "primary-fixed": "#d8e2ff",
+                        "on-primary-fixed": "#001a42",
+                        "on-secondary-fixed": "#0b1c30"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "container-padding": "24px",
+                        "compact-row": "8px",
+                        "unit": "4px",
+                        "gutter": "16px",
+                        "widget-gap": "12px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Inter"],
+                        "data-mono": ["JetBrains Mono"],
+                        "body-sm": ["Inter"],
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "display-lg": ["Hanken Grotesk"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Hanken Grotesk"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["11px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "data-mono": ["13px", { "lineHeight": "16px", "letterSpacing": "-0.01em", "fontWeight": "500" }],
+                        "body-sm": ["12px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-sidebar {
+            backdrop-filter: blur(20px);
+            background-color: rgba(11, 14, 20, 0.8);
+        }
+        .matrix-cell {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .matrix-cell:hover {
+            background-color: #1e293b;
+        }
+        .terminal-glow {
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.1);
+        }
+        .alert-shake {
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+        }
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md overflow-hidden">
+<!-- Side Navigation -->
+<aside class="w-[240px] h-full fixed left-0 top-0 flex flex-col border-r border-outline-variant bg-surface-container-lowest z-50">
+<div class="p-6 flex flex-col gap-1">
+<h1 class="font-headline-lg text-headline-lg font-bold text-primary">Demo Capital</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant opacity-70">AI Intelligence</p>
+</div>
+<nav class="flex-1 px-3 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-secondary-container transition-colors duration-150 group" href="#">
+<span class="material-symbols-outlined text-[20px]">dashboard</span>
+<span class="font-body-md text-body-md">Executive Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-secondary-container transition-colors duration-150 group" href="#">
+<span class="material-symbols-outlined text-[20px]">analytics</span>
+<span class="font-body-md text-body-md">Portfolio Analytics</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-secondary-container transition-colors duration-150 group" href="#">
+<span class="material-symbols-outlined text-[20px]">query_stats</span>
+<span class="font-body-md text-body-md">Trades Monitoring</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-secondary-container transition-colors duration-150 group" href="#">
+<span class="material-symbols-outlined text-[20px]">security</span>
+<span class="font-body-md text-body-md">Risk &amp; Compliance</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-secondary-container transition-colors duration-150 group" href="#">
+<span class="material-symbols-outlined text-[20px]">smart_toy</span>
+<span class="font-body-md text-body-md">AI Copilot</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-secondary-container transition-colors duration-150 group" href="#">
+<span class="material-symbols-outlined text-[20px]">history_edu</span>
+<span class="font-body-md text-body-md">Audit Logs</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-primary font-bold border-r-2 border-primary bg-secondary-container transition-colors duration-150 group" href="#">
+<span class="material-symbols-outlined text-[20px]">lock_person</span>
+<span class="font-body-md text-body-md">RBAC Admin</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-secondary-container transition-colors duration-150 group" href="#">
+<span class="material-symbols-outlined text-[20px]">settings_input_component</span>
+<span class="font-body-md text-body-md">System Ops</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-secondary-container transition-colors duration-150 group" href="#">
+<span class="material-symbols-outlined text-[20px]">present_to_all</span>
+<span class="font-body-md text-body-md">Demo Mode</span>
+</a>
+</nav>
+<div class="p-3 border-t border-outline-variant space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-secondary-container transition-colors duration-150" href="#">
+<span class="material-symbols-outlined text-[20px]">help</span>
+<span class="font-body-md text-body-md">Support</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-secondary-container transition-colors duration-150" href="#">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</a>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="ml-[240px] h-screen overflow-y-auto bg-surface-container-lowest">
+<!-- Top Nav -->
+<header class="h-16 flex justify-between items-center px-container-padding sticky top-0 bg-surface/80 backdrop-blur-md border-b border-outline-variant z-40">
+<div class="flex items-center gap-4 flex-1">
+<div class="relative w-96">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span>
+<input class="w-full bg-surface border border-outline-variant pl-10 pr-4 py-1.5 text-body-sm font-body-sm focus:outline-none focus:border-primary transition-colors" placeholder="Search roles, permissions, or logs..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<button class="text-on-surface-variant hover:text-primary transition-opacity opacity-80 hover:opacity-100">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-opacity opacity-80 hover:opacity-100">
+<span class="material-symbols-outlined">hub</span>
+</button>
+<div class="flex items-center gap-3 pl-6 border-l border-outline-variant">
+<div class="text-right">
+<p class="font-label-caps text-label-caps text-on-surface">ADMIN_S_CHEN</p>
+<p class="text-[10px] text-primary">Superuser</p>
+</div>
+<span class="material-symbols-outlined text-[32px] text-primary">account_circle</span>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<div class="p-container-padding space-y-widget-gap">
+<div class="flex justify-between items-end mb-4">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">RBAC Permissions Matrix</h2>
+<p class="text-on-surface-variant font-body-md">Enterprise Role-Based Access Control Configuration for Institutional Capital Management</p>
+</div>
+<div class="flex gap-3">
+<button class="px-4 py-2 border border-outline-variant text-on-surface font-label-caps text-label-caps hover:bg-surface-container-high transition-colors">EXPORT AUDIT</button>
+<button class="px-4 py-2 bg-primary text-on-primary font-label-caps text-label-caps hover:bg-primary-container transition-colors">DEPLOY CHANGES</button>
+</div>
+</div>
+<div class="grid grid-cols-12 gap-widget-gap">
+<!-- Matrix Table -->
+<div class="col-span-12 xl:col-span-8 bg-surface-container border border-outline-variant overflow-hidden">
+<div class="p-4 border-b border-outline-variant flex justify-between items-center bg-surface-container-high">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">lock_open</span>
+<span class="font-label-caps text-label-caps">CURRENT ENTITLEMENTS MATRIX</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer">more_vert</span>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low">
+<th class="p-4 border-b border-r border-outline-variant font-label-caps text-label-caps text-on-surface-variant w-48">RESOURCES / ROLES</th>
+<th class="p-4 border-b border-outline-variant font-label-caps text-label-caps text-center">ANALYST</th>
+<th class="p-4 border-b border-outline-variant font-label-caps text-label-caps text-center">RISK OFFICER</th>
+<th class="p-4 border-b border-outline-variant font-label-caps text-label-caps text-center">MANAGER</th>
+<th class="p-4 border-b border-outline-variant font-label-caps text-label-caps text-center text-primary-fixed-dim">INTERN</th>
+</tr>
+</thead>
+<tbody class="font-data-mono text-data-mono">
+<!-- Holdings -->
+<tr class="hover:bg-surface-container-highest transition-colors">
+<td class="p-4 border-b border-r border-outline-variant text-on-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">account_balance_wallet</span> HOLDINGS
+                                    </td>
+<td class="p-4 border-b border-outline-variant text-center">
+<span class="material-symbols-outlined text-tertiary">check_circle</span>
+</td>
+<td class="p-4 border-b border-outline-variant text-center">
+<span class="material-symbols-outlined text-tertiary">check_circle</span>
+</td>
+<td class="p-4 border-b border-outline-variant text-center">
+<span class="material-symbols-outlined text-tertiary">check_circle</span>
+</td>
+<td class="p-4 border-b border-outline-variant text-center bg-primary-container/10">
+<span class="material-symbols-outlined text-tertiary">check_circle</span>
+</td>
+</tr>
+<!-- Trades -->
+<tr class="hover:bg-surface-container-highest transition-colors">
+<td class="p-4 border-b border-r border-outline-variant text-on-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">swap_horiz</span> TRADES
+                                    </td>
+<td class="p-4 border-b border-outline-variant text-center">
+<span class="material-symbols-outlined text-tertiary">check_circle</span>
+</td>
+<td class="p-4 border-b border-outline-variant text-center">
+<span class="material-symbols-outlined text-tertiary">check_circle</span>
+</td>
+<td class="p-4 border-b border-outline-variant text-center">
+<span class="material-symbols-outlined text-tertiary">check_circle</span>
+</td>
+<td class="p-4 border-b border-outline-variant text-center bg-primary-container/10">
+<span class="material-symbols-outlined text-error">cancel</span>
+</td>
+</tr>
+<!-- Risk Alerts -->
+<tr class="hover:bg-surface-container-highest transition-colors">
+<td class="p-4 border-b border-r border-outline-variant text-on-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">warning</span> RISK ALERTS
+                                    </td>
+<td class="p-4 border-b border-outline-variant text-center">
+<span class="material-symbols-outlined text-error">cancel</span>
+</td>
+<td class="p-4 border-b border-outline-variant text-center">
+<span class="material-symbols-outlined text-tertiary">check_circle</span>
+</td>
+<td class="p-4 border-b border-outline-variant text-center">
+<span class="material-symbols-outlined text-tertiary">check_circle</span>
+</td>
+<td class="p-4 border-b border-outline-variant text-center bg-primary-container/10">
+<span class="material-symbols-outlined text-error">cancel</span>
+</td>
+</tr>
+<!-- Audit Logs -->
+<tr class="hover:bg-surface-container-highest transition-colors">
+<td class="p-4 border-b border-r border-outline-variant text-on-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">history_edu</span> AUDIT LOGS
+                                    </td>
+<td class="p-4 border-b border-outline-variant text-center">
+<span class="material-symbols-outlined text-error">cancel</span>
+</td>
+<td class="p-4 border-b border-outline-variant text-center">
+<span class="material-symbols-outlined text-error">cancel</span>
+</td>
+<td class="p-4 border-b border-outline-variant text-center">
+<span class="material-symbols-outlined text-tertiary">check_circle</span>
+</td>
+<td class="p-4 border-b border-outline-variant text-center bg-primary-container/10" id="intern-audit-cell">
+<span class="material-symbols-outlined text-error">cancel</span>
+</td>
+</tr>
+<!-- AI Agents -->
+<tr class="hover:bg-surface-container-highest transition-colors">
+<td class="p-4 border-r border-outline-variant text-on-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">smart_toy</span> AI AGENTS
+                                    </td>
+<td class="p-4 text-center">
+<span class="material-symbols-outlined text-tertiary">check_circle</span>
+</td>
+<td class="p-4 text-center">
+<span class="material-symbols-outlined text-tertiary">check_circle</span>
+</td>
+<td class="p-4 text-center">
+<span class="material-symbols-outlined text-tertiary">check_circle</span>
+</td>
+<td class="p-4 text-center bg-primary-container/10">
+<span class="material-symbols-outlined text-tertiary">check_circle</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Simulation Panel -->
+<div class="col-span-12 xl:col-span-4 flex flex-col gap-widget-gap">
+<!-- Live Simulation Card -->
+<div class="bg-surface-container border border-outline-variant h-full flex flex-col">
+<div class="p-4 border-b border-outline-variant bg-surface-container-high flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">science</span>
+<span class="font-label-caps text-label-caps">LIVE SIMULATION ENVIRONMENT</span>
+</div>
+<div class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></div>
+</div>
+<div class="p-6 flex-1 flex flex-col justify-center items-center text-center gap-6 relative">
+<div class="space-y-2">
+<p class="font-label-caps text-label-caps text-on-surface-variant opacity-60">SIMULATION TARGET</p>
+<div class="flex items-center justify-center gap-3">
+<span class="material-symbols-outlined text-primary-fixed-dim text-[48px]">person_outline</span>
+<div class="text-left">
+<p class="font-body-md font-bold text-on-surface">INTERN_ENV_01</p>
+<p class="text-[10px] text-tertiary bg-tertiary/10 px-2 py-0.5 rounded">ONLINE</p>
+</div>
+</div>
+</div>
+<div class="w-full space-y-3">
+<p class="font-label-caps text-label-caps text-on-surface-variant">ACTION REQUEST</p>
+<button class="w-full py-4 border-2 border-dashed border-outline-variant hover:border-primary hover:bg-primary/5 transition-all group flex flex-col items-center gap-2" onclick="triggerDenial()">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary">input</span>
+<span class="font-body-sm text-body-sm">Access Restricted: <span class="font-bold">Audit Logs</span></span>
+</button>
+<p class="text-[11px] text-on-surface-variant italic">Click to simulate a unauthorized access attempt.</p>
+</div>
+<!-- Denial Popup Overlay (Hidden initially) -->
+<div class="hidden absolute inset-0 z-10 flex items-center justify-center p-6" id="denial-popup">
+<div class="absolute inset-0 bg-surface-container-lowest/90 backdrop-blur-sm"></div>
+<div class="relative bg-surface-container-high border border-error p-6 max-w-xs terminal-glow alert-shake">
+<div class="flex items-center gap-3 text-error mb-4">
+<span class="material-symbols-outlined text-[32px]">gpp_maybe</span>
+<h4 class="font-headline-lg-mobile text-headline-lg-mobile font-bold">ACCESS DENIED</h4>
+</div>
+<p class="font-data-mono text-data-mono text-[12px] text-on-surface mb-6">
+                                        ERR_AUTH_403: Role 'INTERN' does not have sufficient privileges to access resource: /api/v1/audit/system-logs
+                                    </p>
+<div class="flex flex-col gap-2">
+<button class="w-full py-2 bg-error text-on-error font-label-caps text-label-caps" onclick="closeDenial()">ACKNOWLEDGE</button>
+<button class="w-full py-2 border border-outline-variant font-label-caps text-label-caps">LOG INCIDENT</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Role Definitions -->
+<div class="bg-surface-container border border-outline-variant">
+<div class="p-4 border-b border-outline-variant bg-surface-container-high">
+<span class="font-label-caps text-label-caps">ROLE METRICS &amp; USAGE</span>
+</div>
+<div class="p-4 space-y-4">
+<div class="flex justify-between items-center">
+<span class="text-body-sm text-on-surface-variant">Total Managed Roles</span>
+<span class="font-data-mono text-on-surface">12</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-body-sm text-on-surface-variant">Active Policies</span>
+<span class="font-data-mono text-on-surface">144</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-body-sm text-on-surface-variant">Access Violations (24h)</span>
+<span class="font-data-mono text-error">03</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Policy History Widget -->
+<div class="bg-surface-container border border-outline-variant">
+<div class="p-4 border-b border-outline-variant flex justify-between items-center bg-surface-container-high">
+<span class="font-label-caps text-label-caps">RECENT POLICY MODIFICATIONS</span>
+<button class="text-primary text-[12px] font-bold">VIEW ALL</button>
+</div>
+<div class="p-2">
+<div class="grid grid-cols-4 gap-4 p-3 border-b border-outline-variant font-label-caps text-label-caps text-on-surface-variant opacity-70">
+<span>TIMESTAMP</span>
+<span>ACTOR</span>
+<span>ACTION</span>
+<span>STATUS</span>
+</div>
+<div class="grid grid-cols-4 gap-4 p-3 hover:bg-surface-container-high transition-colors text-data-mono text-data-mono items-center">
+<span class="text-on-surface-variant">2023-10-24 14:22:01</span>
+<span class="text-primary">ADMIN_S_CHEN</span>
+<span class="text-on-surface">Updated Intern:Trades Policy</span>
+<span class="text-tertiary flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">check_circle</span> DEPLOYED</span>
+</div>
+<div class="grid grid-cols-4 gap-4 p-3 hover:bg-surface-container-high transition-colors text-data-mono text-data-mono items-center">
+<span class="text-on-surface-variant">2023-10-24 13:05:44</span>
+<span class="text-primary">SYSTEM_BOT</span>
+<span class="text-on-surface">Auto-Revoked Manager Expired Sess</span>
+<span class="text-tertiary flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">check_circle</span> SUCCESS</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<script>
+        function triggerDenial() {
+            const popup = document.getElementById('denial-popup');
+            const cell = document.getElementById('intern-audit-cell');
+            
+            popup.classList.remove('hidden');
+            cell.classList.add('bg-error/20');
+            
+            // Log to console for effect
+            console.error("[SEC_CORE] Access Violation Detected: Subject 'INTERN_ENV_01' attempted to read protected resource 'AUDIT_LOGS'");
+        }
+
+        function closeDenial() {
+            const popup = document.getElementById('denial-popup');
+            const cell = document.getElementById('intern-audit-cell');
+            popup.classList.add('hidden');
+            cell.classList.remove('bg-error/20');
+        }
+
+        // Add some "live data" flickering to the matrix cells
+        setInterval(() => {
+            const cells = document.querySelectorAll('.matrix-cell');
+            const randomCell = cells[Math.floor(Math.random() * cells.length)];
+            if(randomCell) {
+                randomCell.style.opacity = '0.7';
+                setTimeout(() => randomCell.style.opacity = '1', 100);
+            }
+        }, 3000);
+    </script>
+</body></html>

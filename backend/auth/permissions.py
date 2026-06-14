@@ -14,7 +14,7 @@ Resources (granular, map 1:1 to data the platform can expose):
     risk_alerts        flagged trades + risk-rule breaches
     audit_logs         the AI interaction audit trail
 
-Matrix (mirrors the assessment brief):
+Matrix (mirrors the project spec):
     analyst  -> portfolio + market data            (NO trades, risk, audit)
     risk     -> portfolio + trades + risk alerts    (+ audit oversight)
     manager  -> summary-only                        (NO raw holdings/trades/risk)
@@ -54,7 +54,7 @@ PERMISSIONS: dict[str, frozenset[str]] = {
         }
     ),
     # Manager has FULL access (project-owner override). NOTE: this diverges from
-    # the assessment brief's "summary-only" manager role — kept here per request.
+    # the project spec's "summary-only" manager role — kept here per request.
     "manager": frozenset(RESOURCES),
     # Intern: basic portfolio summary, nothing else.
     "intern": frozenset({"portfolio_summary"}),

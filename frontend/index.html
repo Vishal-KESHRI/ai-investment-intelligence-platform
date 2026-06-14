@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Demo Capital — Local AI Investment Intelligence (Demo)</title>
+<meta name="description" content="A personal demo project: a locally-runnable AI investment-operations platform with role-based access control, audit logging and tool-calling agents. All data is fictional."/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: { extend: {
+      colors: {
+        outline: "#8c909f", surface: "#10131a", background: "#10131a",
+        "surface-container-lowest": "#0b0e14", "surface-container-low": "#191c22",
+        "surface-container": "#1d2026", "surface-container-high": "#272a31",
+        "outline-variant": "#424754", "on-surface": "#e1e2eb",
+        "on-surface-variant": "#c2c6d6", primary: "#adc6ff",
+        "primary-container": "#4d8eff", "on-primary": "#002e6a",
+        tertiary: "#4edea3", error: "#ffb4ab"
+      },
+      borderRadius: { DEFAULT: "0.125rem", lg: "0.25rem", xl: "0.5rem", full: "0.75rem" },
+      fontFamily: {
+        "label-caps": ["Inter"], "data-mono": ["JetBrains Mono"],
+        "body-sm": ["Inter"], "body-md": ["Inter"],
+        "display-lg": ["Hanken Grotesk"], "headline-lg": ["Hanken Grotesk"]
+      }
+    } }
+  }
+</script>
+<style>
+  body { background: radial-gradient(circle at 50% 0%, #151921 0%, #0b0e14 100%); }
+  .glass-panel { background: rgba(25,28,34,0.6); backdrop-filter: blur(24px); border: 1px solid rgba(255,255,255,0.08); }
+  .data-pattern { background-image: radial-gradient(rgba(77,142,255,0.12) 1px, transparent 1px); background-size: 32px 32px; }
+  .card:hover { transform: translateY(-4px); }
+  .card { transition: transform .25s ease, border-color .25s ease, background .25s ease; }
+</style>
+</head>
+<body class="bg-background text-on-surface min-h-screen">
+<div class="fixed inset-0 data-pattern opacity-30 pointer-events-none"></div>
+<div class="fixed top-[-10%] right-[-5%] w-[600px] h-[600px] bg-primary/10 rounded-full blur-[120px] pointer-events-none"></div>
+<div class="fixed bottom-[-15%] left-[-5%] w-[600px] h-[600px] bg-tertiary/10 rounded-full blur-[120px] pointer-events-none"></div>
+
+<main class="relative z-10 max-w-6xl mx-auto px-6 py-16">
+
+  <!-- Hero -->
+  <header class="text-center mb-14">
+    <div class="inline-flex items-center px-3 py-1 rounded-full bg-surface-container-high border border-outline-variant mb-6">
+      <span class="w-2 h-2 rounded-full bg-tertiary animate-pulse mr-2"></span>
+      <span class="font-label-caps text-[11px] tracking-widest text-on-surface-variant uppercase">Personal Demo Project · Fictional Data</span>
+    </div>
+    <div class="flex items-center justify-center mb-5">
+      <div class="w-12 h-12 bg-primary flex items-center justify-center rounded-lg mr-4">
+        <span class="material-symbols-outlined text-on-primary text-3xl" style="font-variation-settings:'FILL' 1;">terminal</span>
+      </div>
+      <h1 class="font-display-lg text-5xl font-bold tracking-tight">Demo Capital</h1>
+    </div>
+    <p class="font-body-md text-on-surface-variant max-w-2xl mx-auto text-lg leading-relaxed">
+      A locally-runnable <span class="text-primary font-semibold">AI investment-intelligence platform</span> —
+      tool-calling agents, server-side role-based access control, and full audit logging.
+      Explore the interface screens below.
+    </p>
+    <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+      <a href="login.html" class="inline-flex items-center bg-primary hover:bg-primary-container text-on-primary font-bold px-6 py-3 rounded-lg transition-all group">
+        <span class="mr-2">Launch the demo</span>
+        <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+      </a>
+      <a href="https://github.com/Vishal-KESHRI/ai-investment-intelligence-platform" class="inline-flex items-center bg-surface-container-high hover:bg-surface-container border border-outline-variant text-on-surface font-semibold px-6 py-3 rounded-lg transition-all">
+        <span class="material-symbols-outlined mr-2 text-[20px]">code</span>
+        <span>View source on GitHub</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Screen grid -->
+  <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+
+    <a href="login.html" class="card glass-panel rounded-xl p-6 hover:border-primary/40">
+      <span class="material-symbols-outlined text-primary text-3xl mb-3">lock</span>
+      <h3 class="font-headline-lg text-xl font-semibold mb-1">Secure Login</h3>
+      <p class="font-body-sm text-on-surface-variant">JWT-based session entry with contextual demo roles.</p>
+    </a>
+
+    <a href="executive.html" class="card glass-panel rounded-xl p-6 hover:border-primary/40">
+      <span class="material-symbols-outlined text-primary text-3xl mb-3">space_dashboard</span>
+      <h3 class="font-headline-lg text-xl font-semibold mb-1">Executive Dashboard</h3>
+      <p class="font-body-sm text-on-surface-variant">Portfolio value, P&amp;L and allocation at a glance.</p>
+    </a>
+
+    <a href="analytics.html" class="card glass-panel rounded-xl p-6 hover:border-primary/40">
+      <span class="material-symbols-outlined text-primary text-3xl mb-3">query_stats</span>
+      <h3 class="font-headline-lg text-xl font-semibold mb-1">Portfolio Analytics</h3>
+      <p class="font-body-sm text-on-surface-variant">Holdings, exposure and top movers, visualized.</p>
+    </a>
+
+    <a href="trades.html" class="card glass-panel rounded-xl p-6 hover:border-primary/40">
+      <span class="material-symbols-outlined text-primary text-3xl mb-3">swap_horiz</span>
+      <h3 class="font-headline-lg text-xl font-semibold mb-1">Trades Monitoring</h3>
+      <p class="font-body-sm text-on-surface-variant">Live trade blotter and execution activity.</p>
+    </a>
+
+    <a href="risk.html" class="card glass-panel rounded-xl p-6 hover:border-error/40">
+      <span class="material-symbols-outlined text-error text-3xl mb-3">security</span>
+      <h3 class="font-headline-lg text-xl font-semibold mb-1">Risk &amp; Compliance</h3>
+      <p class="font-body-sm text-on-surface-variant">Flagged trades, overexposure and review queue.</p>
+    </a>
+
+    <a href="copilot.html" class="card glass-panel rounded-xl p-6 hover:border-tertiary/40">
+      <span class="material-symbols-outlined text-tertiary text-3xl mb-3">smart_toy</span>
+      <h3 class="font-headline-lg text-xl font-semibold mb-1">AI Copilot</h3>
+      <p class="font-body-sm text-on-surface-variant">Tool-calling agents answering from real data.</p>
+    </a>
+
+    <a href="audit.html" class="card glass-panel rounded-xl p-6 hover:border-primary/40">
+      <span class="material-symbols-outlined text-primary text-3xl mb-3">receipt_long</span>
+      <h3 class="font-headline-lg text-xl font-semibold mb-1">Audit Logs</h3>
+      <p class="font-body-sm text-on-surface-variant">Every allowed and denied AI interaction, logged.</p>
+    </a>
+
+    <a href="rbac.html" class="card glass-panel rounded-xl p-6 hover:border-primary/40">
+      <span class="material-symbols-outlined text-primary text-3xl mb-3">admin_panel_settings</span>
+      <h3 class="font-headline-lg text-xl font-semibold mb-1">RBAC Matrix</h3>
+      <p class="font-body-sm text-on-surface-variant">Server-side permission model by role and resource.</p>
+    </a>
+
+    <a href="sysops.html" class="card glass-panel rounded-xl p-6 hover:border-primary/40">
+      <span class="material-symbols-outlined text-primary text-3xl mb-3">dns</span>
+      <h3 class="font-headline-lg text-xl font-semibold mb-1">System Ops</h3>
+      <p class="font-body-sm text-on-surface-variant">Infrastructure health and deployment status.</p>
+    </a>
+
+    <a href="demo.html" class="card glass-panel rounded-xl p-6 hover:border-tertiary/40 sm:col-span-2 lg:col-span-3">
+      <span class="material-symbols-outlined text-tertiary text-3xl mb-3">slideshow</span>
+      <h3 class="font-headline-lg text-xl font-semibold mb-1">Presentation Mode</h3>
+      <p class="font-body-sm text-on-surface-variant">A guided walkthrough of the platform architecture and capabilities.</p>
+    </a>
+
+  </section>
+
+  <!-- Footer -->
+  <footer class="mt-16 text-center">
+    <p class="font-body-sm text-outline max-w-2xl mx-auto">
+      “Demo Capital” is a fictional brand used purely for demonstration. All names, figures and data shown
+      are synthetic. This is a personal portfolio project — not affiliated with any real company.
+    </p>
+    <p class="font-data-mono text-[10px] text-outline uppercase mt-4">Demo Build · AI Investment Intelligence Platform</p>
+  </footer>
+
+</main>
+</body></html>

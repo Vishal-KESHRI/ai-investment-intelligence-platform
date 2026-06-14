@@ -1,4 +1,4 @@
-# ARP Global Capital — Streamlit dashboard dependencies
+# Demo Capital — Streamlit dashboard dependencies
 streamlit==1.41.1
 plotly==5.24.1
 pandas==2.2.3

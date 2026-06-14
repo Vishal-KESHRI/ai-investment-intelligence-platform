@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Demo Capital - Demo Presentation Mode</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Hanken+Grotesk:wght@600;700;800&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline": "#8c909f",
+                        "surface-bright": "#363940",
+                        "tertiary-fixed-dim": "#4edea3",
+                        "outline-variant": "#424754",
+                        "surface": "#10131a",
+                        "on-secondary": "#213145",
+                        "on-surface-variant": "#c2c6d6",
+                        "inverse-surface": "#e1e2eb",
+                        "surface-container-lowest": "#0b0e14",
+                        "on-tertiary-fixed": "#002113",
+                        "on-tertiary-fixed-variant": "#005236",
+                        "surface-variant": "#32353c",
+                        "on-tertiary": "#003824",
+                        "on-error": "#690005",
+                        "surface-container-high": "#272a31",
+                        "background": "#10131a",
+                        "on-secondary-fixed-variant": "#38485d",
+                        "inverse-on-surface": "#2e3037",
+                        "primary-container": "#4d8eff",
+                        "primary-fixed-dim": "#adc6ff",
+                        "on-primary-fixed-variant": "#004395",
+                        "secondary": "#b7c8e1",
+                        "on-secondary-container": "#a9bad3",
+                        "secondary-container": "#3a4a5f",
+                        "on-primary": "#002e6a",
+                        "on-surface": "#e1e2eb",
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "primary": "#adc6ff",
+                        "surface-container-low": "#191c22",
+                        "surface-dim": "#10131a",
+                        "surface-container-highest": "#32353c",
+                        "error-container": "#93000a",
+                        "inverse-primary": "#005ac2",
+                        "tertiary": "#4edea3",
+                        "tertiary-fixed": "#6ffbbe",
+                        "on-error-container": "#ffdad6",
+                        "on-background": "#e1e2eb",
+                        "on-primary-container": "#00285d",
+                        "secondary-fixed": "#d3e4fe",
+                        "tertiary-container": "#00a572",
+                        "surface-tint": "#adc6ff",
+                        "on-tertiary-container": "#00311f",
+                        "surface-container": "#1d2026",
+                        "error": "#ffb4ab",
+                        "primary-fixed": "#d8e2ff",
+                        "on-primary-fixed": "#001a42",
+                        "on-secondary-fixed": "#0b1c30"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "container-padding": "24px",
+                        "compact-row": "8px",
+                        "unit": "4px",
+                        "gutter": "16px",
+                        "widget-gap": "12px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Inter"],
+                        "data-mono": ["JetBrains Mono"],
+                        "body-sm": ["Inter"],
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "display-lg": ["Hanken Grotesk"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Hanken Grotesk"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["11px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "data-mono": ["13px", {"lineHeight": "16px", "letterSpacing": "-0.01em", "fontWeight": "500"}],
+                        "body-sm": ["12px", {"lineHeight": "18px", "fontWeight": "400"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(21, 25, 33, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid #1E293B;
+        }
+        .flow-line {
+            background: linear-gradient(90deg, transparent, #3B82F6, transparent);
+            height: 1px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        .flow-line::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, #adc6ff, transparent);
+            animation: flow 3s infinite linear;
+        }
+        @keyframes flow {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        .tech-node {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .tech-node:hover {
+            border-color: #3B82F6;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md selection:bg-primary-container selection:text-on-primary-container">
+<!-- Sidebar Navigation -->
+<aside class="w-[240px] h-full fixed left-0 top-0 flex flex-col border-r border-outline-variant bg-surface-container-lowest backdrop-blur-xl z-50">
+<div class="p-6">
+<h1 class="font-headline-lg text-headline-lg font-bold text-primary">Demo Capital</h1>
+<p class="text-on-surface-variant text-body-sm mt-1">AI Intelligence</p>
+</div>
+<nav class="flex-1 px-4 space-y-1 mt-4">
+<a class="flex items-center px-4 py-2 rounded-lg text-on-surface-variant hover:bg-secondary-container transition-colors duration-150" href="#">
+<span class="material-symbols-outlined mr-3">dashboard</span>
+<span class="font-body-md">Executive Dashboard</span>
+</a>
+<a class="flex items-center px-4 py-2 rounded-lg text-on-surface-variant hover:bg-secondary-container transition-colors duration-150" href="#">
+<span class="material-symbols-outlined mr-3">analytics</span>
+<span class="font-body-md">Portfolio Analytics</span>
+</a>
+<a class="flex items-center px-4 py-2 rounded-lg text-on-surface-variant hover:bg-secondary-container transition-colors duration-150" href="#">
+<span class="material-symbols-outlined mr-3">query_stats</span>
+<span class="font-body-md">Trades Monitoring</span>
+</a>
+<a class="flex items-center px-4 py-2 rounded-lg text-on-surface-variant hover:bg-secondary-container transition-colors duration-150" href="#">
+<span class="material-symbols-outlined mr-3">security</span>
+<span class="font-body-md">Risk &amp; Compliance</span>
+</a>
+<a class="flex items-center px-4 py-2 rounded-lg text-on-surface-variant hover:bg-secondary-container transition-colors duration-150" href="#">
+<span class="material-symbols-outlined mr-3">smart_toy</span>
+<span class="font-body-md">AI Copilot</span>
+</a>
+<a class="flex items-center px-4 py-2 rounded-lg text-on-surface-variant hover:bg-secondary-container transition-colors duration-150" href="#">
+<span class="material-symbols-outlined mr-3">history_edu</span>
+<span class="font-body-md">Audit Logs</span>
+</a>
+<a class="flex items-center px-4 py-2 rounded-lg text-on-surface-variant hover:bg-secondary-container transition-colors duration-150" href="#">
+<span class="material-symbols-outlined mr-3">lock_person</span>
+<span class="font-body-md">RBAC Admin</span>
+</a>
+<a class="flex items-center px-4 py-2 rounded-lg text-on-surface-variant hover:bg-secondary-container transition-colors duration-150" href="#">
+<span class="material-symbols-outlined mr-3">settings_input_component</span>
+<span class="font-body-md">System Ops</span>
+</a>
+<a class="flex items-center px-4 py-2 rounded-lg text-primary font-bold border-r-2 border-primary bg-secondary-container transition-colors duration-150" href="#">
+<span class="material-symbols-outlined mr-3">present_to_all</span>
+<span class="font-body-md">Demo Mode</span>
+</a>
+</nav>
+<div class="p-4 border-t border-outline-variant">
+<a class="flex items-center px-4 py-2 rounded-lg text-on-surface-variant hover:bg-secondary-container transition-colors" href="#">
+<span class="material-symbols-outlined mr-3">help</span>
+<span class="font-body-md">Support</span>
+</a>
+<a class="flex items-center px-4 py-2 rounded-lg text-on-surface-variant hover:bg-secondary-container transition-colors" href="#">
+<span class="material-symbols-outlined mr-3">settings</span>
+<span class="font-body-md">Settings</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-[240px] min-h-screen bg-surface-container-lowest relative overflow-hidden">
+<!-- Top Navigation -->
+<header class="sticky top-0 z-40 flex justify-between items-center w-full px-container-padding h-16 bg-surface/80 backdrop-blur-md border-b border-outline-variant">
+<div class="flex items-center space-x-4">
+<div class="bg-surface-container-high px-4 py-1.5 rounded flex items-center">
+<span class="material-symbols-outlined text-primary text-sm mr-2">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-sm w-64 text-on-surface" placeholder="Search architecture components..." type="text"/>
+</div>
+</div>
+<div class="flex items-center space-x-6">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-opacity">notifications</span>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-opacity">hub</span>
+<div class="flex items-center space-x-2 cursor-pointer opacity-80 hover:opacity-100">
+<span class="material-symbols-outlined text-primary">account_circle</span>
+<span class="font-body-sm text-on-surface">Admin Console</span>
+</div>
+</div>
+</header>
+<!-- Presentation Hero -->
+<section class="p-12 relative">
+<div class="max-w-7xl mx-auto">
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-16">
+<div>
+<span class="font-label-caps text-label-caps text-primary tracking-widest bg-primary/10 px-3 py-1 rounded mb-4 inline-block">SYSTEM ARCHITECTURE OVERVIEW</span>
+<h2 class="font-display-lg text-display-lg text-on-surface mt-2">Next-Gen AI Hedge Fund Infrastructure</h2>
+<p class="font-body-md text-on-surface-variant max-w-2xl mt-4">Conceptual breakdown of the Demo Capital proprietary stack, highlighting the seamless integration between high-frequency trade engines and generative AI intelligence.</p>
+</div>
+<div class="hidden md:block">
+<div class="flex space-x-2">
+<span class="w-3 h-3 rounded-full bg-tertiary animate-pulse"></span>
+<span class="font-data-mono text-data-mono text-tertiary">LIVE DEMO CLUSTER ACTIVE</span>
+</div>
+</div>
+</div>
+<!-- Main Architecture Diagram (Bento Style) -->
+<div class="grid grid-cols-12 gap-gutter">
+<!-- Flow Header -->
+<div class="col-span-12 glass-card p-12 rounded-xl flex flex-col items-center justify-between mb-8 overflow-hidden relative">
+<!-- Decorative background element -->
+<div class="absolute inset-0 opacity-10 pointer-events-none">
+<div class="absolute top-0 right-0 w-96 h-96 bg-primary/20 blur-3xl rounded-full translate-x-1/2 -translate-y-1/2"></div>
+</div>
+<div class="flex w-full justify-between items-center z-10">
+<!-- Dashboard -->
+<div class="flex flex-col items-center space-y-4 tech-node p-6 border border-outline-variant rounded-lg bg-surface-container w-40 text-center">
+<span class="material-symbols-outlined text-primary text-4xl" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="font-label-caps text-label-caps">Frontend Dashboard</span>
+</div>
+<div class="flex-1 px-4"><div class="flow-line"></div></div>
+<!-- FastAPI -->
+<div class="flex flex-col items-center space-y-4 tech-node p-6 border border-outline-variant rounded-lg bg-surface-container w-40 text-center">
+<span class="material-symbols-outlined text-tertiary text-4xl">api</span>
+<span class="font-label-caps text-label-caps">FastAPI Layer</span>
+</div>
+<div class="flex-1 px-4"><div class="flow-line"></div></div>
+<!-- AI Agents -->
+<div class="flex flex-col items-center space-y-4 tech-node p-6 border border-outline-variant rounded-lg bg-primary-container/20 w-40 text-center ring-1 ring-primary">
+<span class="material-symbols-outlined text-primary text-4xl" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+<span class="font-label-caps text-label-caps text-primary">AI Agents Cluster</span>
+</div>
+<div class="flex-1 px-4"><div class="flow-line"></div></div>
+<!-- SQLite / Storage -->
+<div class="flex flex-col items-center space-y-4 tech-node p-6 border border-outline-variant rounded-lg bg-surface-container w-40 text-center">
+<span class="material-symbols-outlined text-on-surface-variant text-4xl">database</span>
+<span class="font-label-caps text-label-caps">SQLite + Vectors</span>
+</div>
+<div class="flex-1 px-4"><div class="flow-line"></div></div>
+<!-- Audit Logs -->
+<div class="flex flex-col items-center space-y-4 tech-node p-6 border border-outline-variant rounded-lg bg-surface-container w-40 text-center">
+<span class="material-symbols-outlined text-on-surface-variant text-4xl">history_edu</span>
+<span class="font-label-caps text-label-caps">Audit &amp; Compliance</span>
+</div>
+</div>
+</div>
+<!-- AI Agent Flow Infographic -->
+<div class="col-span-12 lg:col-span-7 glass-card p-8 rounded-xl">
+<div class="flex justify-between items-start mb-6">
+<h3 class="font-headline-lg text-headline-lg-mobile flex items-center">
+<span class="material-symbols-outlined mr-3 text-tertiary">psychology</span>
+                                AI Intelligence Lifecycle
+                            </h3>
+<span class="font-data-mono text-data-mono text-on-surface-variant px-2 py-1 bg-surface-container rounded border border-outline-variant">v2.4.0-PROD</span>
+</div>
+<div class="grid grid-cols-2 gap-8">
+<div class="space-y-6">
+<div class="p-4 bg-surface-container rounded-lg border-l-4 border-primary">
+<h4 class="font-label-caps text-on-surface mb-2">1. Ingestion Layer</h4>
+<p class="text-body-sm text-on-surface-variant">Real-time market data streams and news sentiment processing via LLM-optimized tokens.</p>
+</div>
+<div class="p-4 bg-surface-container rounded-lg border-l-4 border-tertiary">
+<h4 class="font-label-caps text-on-surface mb-2">2. Reasoning Engine</h4>
+<p class="text-body-sm text-on-surface-variant">Autonomous agents cross-reference trade patterns with historical risk parameters.</p>
+</div>
+</div>
+<div class="relative min-h-[200px] flex items-center justify-center">
+<div class="absolute inset-0 bg-primary/5 rounded-full blur-3xl"></div>
+<img class="rounded-xl object-cover w-full h-full opacity-60 mix-blend-screen" data-alt="A sophisticated architectural visualization of data nodes and neural network pathways. The scene is set in a dark, high-tech command center with holographic blue projections illuminating the workspace. The atmosphere is professional, cinematic, and suggests extreme technological power and precision, adhering to a minimalist financial technology aesthetic with glowing glass surfaces and sharp digital interfaces." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAz9IcX6mGuboZnpvHHC6b1ckd2TVgbGsW-6G0ZpLYZMNEarxsEyH2TLdra8OySA-ZOCBN5ekob6fqLRahmEARC_iXa371PhfhUcPODFm_gVpJABCAMUHwKXqgnCebLMMyKUIQ_bFELnuPfdKlKs_ULPan3uLpCdkScPDLCu12FBlIoP_b-BDK7L1s9WIT7_wk1KXUPx78hyLmYYEkK0OYbbiTN_ZDgz70bgANeyqGWGvhWcRPdbPTRyRukq7R1OC86Ssc8hQqXsrg"/>
+</div>
+</div>
+</div>
+<!-- Strategic Summary Chips -->
+<div class="col-span-12 lg:col-span-5 flex flex-col gap-gutter">
+<div class="glass-card p-6 rounded-xl flex-1">
+<div class="flex items-center mb-4">
+<span class="material-symbols-outlined text-primary mr-3">shield_lock</span>
+<h4 class="font-headline-lg text-body-md font-bold">Institutional Security</h4>
+</div>
+<ul class="space-y-3">
+<li class="flex items-start">
+<span class="material-symbols-outlined text-tertiary text-sm mr-2 mt-0.5">check_circle</span>
+<span class="text-body-sm text-on-surface-variant">AES-256 at-rest encryption for all trade metadata.</span>
+</li>
+<li class="flex items-start">
+<span class="material-symbols-outlined text-tertiary text-sm mr-2 mt-0.5">check_circle</span>
+<span class="text-body-sm text-on-surface-variant">Zero-Trust Network Access (ZTNA) between microservices.</span>
+</li>
+<li class="flex items-start">
+<span class="material-symbols-outlined text-tertiary text-sm mr-2 mt-0.5">check_circle</span>
+<span class="text-body-sm text-on-surface-variant">Real-time anomaly detection on API calls.</span>
+</li>
+</ul>
+</div>
+<div class="glass-card p-6 rounded-xl flex-1 border-primary/20">
+<div class="flex items-center mb-4">
+<span class="material-symbols-outlined text-primary mr-3">terminal</span>
+<h4 class="font-headline-lg text-body-md font-bold">DevOps Maturity</h4>
+</div>
+<div class="flex items-center space-x-4">
+<div class="bg-surface-container p-3 rounded-lg border border-outline-variant flex-1 text-center">
+<div class="font-data-mono text-primary text-xl">99.99%</div>
+<div class="font-label-caps text-label-caps opacity-60">UPTIME</div>
+</div>
+<div class="bg-surface-container p-3 rounded-lg border border-outline-variant flex-1 text-center">
+<div class="font-data-mono text-tertiary text-xl">&lt;15ms</div>
+<div class="font-label-caps text-label-caps opacity-60">LATENCY</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Deployment Infrastructure Card -->
+<div class="col-span-12 glass-card p-8 rounded-xl overflow-hidden relative">
+<div class="flex flex-col md:flex-row justify-between items-center gap-8">
+<div class="max-w-md">
+<h3 class="font-headline-lg text-headline-lg-mobile mb-4">Dockerized Deployment</h3>
+<p class="text-body-md text-on-surface-variant mb-6">Our container orchestration strategy ensures horizontal scalability across hybrid cloud environments. Every agent instance is sandboxed and isolated.</p>
+<div class="flex flex-wrap gap-2">
+<span class="px-3 py-1 bg-surface-container border border-outline-variant rounded font-data-mono text-body-sm">kubernetes</span>
+<span class="px-3 py-1 bg-surface-container border border-outline-variant rounded font-data-mono text-body-sm">terraform</span>
+<span class="px-3 py-1 bg-surface-container border border-outline-variant rounded font-data-mono text-body-sm">prometheus</span>
+<span class="px-3 py-1 bg-surface-container border border-outline-variant rounded font-data-mono text-body-sm">grafana</span>
+</div>
+</div>
+<div class="grid grid-cols-3 gap-4 w-full md:w-auto">
+<div class="w-32 h-32 bg-surface-container border border-primary/30 rounded-xl flex flex-col items-center justify-center tech-node">
+<span class="material-symbols-outlined text-primary mb-2">package</span>
+<span class="font-label-caps text-label-caps text-[10px]">Container-A</span>
+</div>
+<div class="w-32 h-32 bg-surface-container border border-primary/30 rounded-xl flex flex-col items-center justify-center tech-node scale-110">
+<span class="material-symbols-outlined text-primary mb-2">package</span>
+<span class="font-label-caps text-label-caps text-[10px]">Registry</span>
+</div>
+<div class="w-32 h-32 bg-surface-container border border-primary/30 rounded-xl flex flex-col items-center justify-center tech-node">
+<span class="material-symbols-outlined text-primary mb-2">package</span>
+<span class="font-label-caps text-label-caps text-[10px]">Container-B</span>
+</div>
+</div>
+</div>
+<div class="absolute bottom-0 right-0 w-64 h-64 bg-tertiary/5 blur-3xl -z-10"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Presentation Controls Footer -->
+<footer class="fixed bottom-6 right-12 z-50 flex items-center space-x-4">
+<button class="bg-surface-container-high border border-outline-variant p-4 rounded-full glass-card hover:bg-primary-container transition-all group shadow-2xl">
+<span class="material-symbols-outlined text-on-surface group-hover:text-on-primary-container">arrow_back</span>
+</button>
+<div class="bg-surface-container-high border border-outline-variant px-6 py-4 rounded-full glass-card shadow-2xl flex items-center space-x-8">
+<div class="flex items-center space-x-2">
+<span class="font-data-mono text-primary">SLIDE</span>
+<span class="font-headline-lg text-body-md font-bold">04 / 12</span>
+</div>
+<div class="h-6 w-px bg-outline-variant"></div>
+<div class="flex space-x-4">
+<span class="material-symbols-outlined cursor-pointer text-on-surface-variant hover:text-primary">pause_circle</span>
+<span class="material-symbols-outlined cursor-pointer text-on-surface-variant hover:text-primary">fullscreen</span>
+<span class="material-symbols-outlined cursor-pointer text-on-surface-variant hover:text-primary">share</span>
+</div>
+</div>
+<button class="bg-primary border border-primary-container p-4 rounded-full hover:scale-105 transition-all shadow-2xl shadow-primary/20">
+<span class="material-symbols-outlined text-on-primary">arrow_forward</span>
+</button>
+</footer>
+</main>
+<script>
+        // Simple interactivity for the tech nodes
+        document.querySelectorAll('.tech-node').forEach(node => {
+            node.addEventListener('mouseenter', () => {
+                const label = node.querySelector('.font-label-caps').textContent;
+                console.log(`Focusing component: ${label}`);
+            });
+        });
+
+        // Background atmosphere: slow moving subtle glows
+        const main = document.querySelector('main');
+        main.addEventListener('mousemove', (e) => {
+            const x = e.clientX;
+            const y = e.clientY;
+            // Optionally update a custom property for dynamic lighting effects
+        });
+    </script>
+</body></html>

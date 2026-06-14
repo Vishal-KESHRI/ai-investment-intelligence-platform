@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Trades Monitoring | Demo Capital</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500&amp;family=Hanken+Grotesk:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+            70% { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+        .high-risk-pulse {
+            animation: pulse-red 2s infinite;
+        }
+        .glass-panel {
+            backdrop-filter: blur(20px);
+            background: rgba(21, 25, 33, 0.8);
+            border: 1px solid #1E293B;
+        }
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #10131a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #424754;
+            border-radius: 10px;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline": "#8c909f",
+                        "surface-bright": "#363940",
+                        "tertiary-fixed-dim": "#4edea3",
+                        "outline-variant": "#424754",
+                        "surface": "#10131a",
+                        "on-secondary": "#213145",
+                        "on-surface-variant": "#c2c6d6",
+                        "inverse-surface": "#e1e2eb",
+                        "surface-container-lowest": "#0b0e14",
+                        "on-tertiary-fixed": "#002113",
+                        "on-tertiary-fixed-variant": "#005236",
+                        "surface-variant": "#32353c",
+                        "on-tertiary": "#003824",
+                        "on-error": "#690005",
+                        "surface-container-high": "#272a31",
+                        "background": "#10131a",
+                        "on-secondary-fixed-variant": "#38485d",
+                        "inverse-on-surface": "#2e3037",
+                        "primary-container": "#4d8eff",
+                        "primary-fixed-dim": "#adc6ff",
+                        "on-primary-fixed-variant": "#004395",
+                        "secondary": "#b7c8e1",
+                        "on-secondary-container": "#a9bad3",
+                        "secondary-container": "#3a4a5f",
+                        "on-primary": "#002e6a",
+                        "on-surface": "#e1e2eb",
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "primary": "#adc6ff",
+                        "surface-container-low": "#191c22",
+                        "surface-dim": "#10131a",
+                        "surface-container-highest": "#32353c",
+                        "error-container": "#93000a",
+                        "inverse-primary": "#005ac2",
+                        "tertiary": "#4edea3",
+                        "tertiary-fixed": "#6ffbbe",
+                        "on-error-container": "#ffdad6",
+                        "on-background": "#e1e2eb",
+                        "on-primary-container": "#00285d",
+                        "secondary-fixed": "#d3e4fe",
+                        "tertiary-container": "#00a572",
+                        "surface-tint": "#adc6ff",
+                        "on-tertiary-container": "#00311f",
+                        "surface-container": "#1d2026",
+                        "error": "#ffb4ab",
+                        "primary-fixed": "#d8e2ff",
+                        "on-primary-fixed": "#001a42",
+                        "on-secondary-fixed": "#0b1c30"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "container-padding": "24px",
+                        "compact-row": "8px",
+                        "unit": "4px",
+                        "gutter": "16px",
+                        "widget-gap": "12px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Inter"],
+                        "data-mono": ["JetBrains Mono"],
+                        "body-sm": ["Inter"],
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "display-lg": ["Hanken Grotesk"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Hanken Grotesk"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["11px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "data-mono": ["13px", {"lineHeight": "16px", "letterSpacing": "-0.01em", "fontWeight": "500"}],
+                        "body-sm": ["12px", {"lineHeight": "18px", "fontWeight": "400"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface font-body-md selection:bg-primary/30">
+<!-- Sidebar Navigation -->
+<aside class="w-[240px] h-full fixed left-0 top-0 flex flex-col border-r border-outline-variant bg-surface-container-lowest backdrop-blur-xl z-50">
+<div class="p-6">
+<h1 class="font-headline-lg text-headline-lg font-bold text-primary">Demo Capital</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">AI Intelligence</p>
+</div>
+<nav class="flex-1 px-3 space-y-1 overflow-y-auto">
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-secondary-container transition-colors font-body-md text-body-md rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>Executive Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-secondary-container transition-colors font-body-md text-body-md rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span>Portfolio Analytics</span>
+</a>
+<!-- Active State: Trades Monitoring -->
+<a class="flex items-center gap-3 px-3 py-2 text-primary font-bold border-r-2 border-primary bg-secondary-container/20 transition-colors font-body-md text-body-md rounded-l-lg" href="#">
+<span class="material-symbols-outlined" data-icon="query_stats">query_stats</span>
+<span>Trades Monitoring</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-secondary-container transition-colors font-body-md text-body-md rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="security">security</span>
+<span>Risk &amp; Compliance</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-secondary-container transition-colors font-body-md text-body-md rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="smart_toy">smart_toy</span>
+<span>AI Copilot</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-secondary-container transition-colors font-body-md text-body-md rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="history_edu">history_edu</span>
+<span>Audit Logs</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-secondary-container transition-colors font-body-md text-body-md rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="lock_person">lock_person</span>
+<span>RBAC Admin</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-secondary-container transition-colors font-body-md text-body-md rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="settings_input_component">settings_input_component</span>
+<span>System Ops</span>
+</a>
+</nav>
+<div class="p-3 border-t border-outline-variant space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-secondary-container transition-colors font-body-md text-body-md rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span>Support</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-secondary-container transition-colors font-body-md text-body-md rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span>Settings</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-[240px] min-h-screen flex flex-col">
+<!-- Top Navigation Bar -->
+<header class="sticky top-0 z-40 flex justify-between items-center w-full px-container-padding h-16 bg-surface/80 backdrop-blur-md border-b border-outline-variant">
+<div class="flex items-center gap-6 flex-1">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline" data-icon="search">search</span>
+<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg py-2 pl-10 pr-4 text-body-sm focus:outline-none focus:border-primary transition-all" placeholder="Search Trade ID, Asset, or Counterparty..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-opacity opacity-80 hover:opacity-100" data-icon="notifications">notifications</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-opacity opacity-80 hover:opacity-100" data-icon="hub">hub</button>
+<div class="h-8 w-8 rounded-full overflow-hidden border border-outline-variant cursor-pointer">
+<img class="h-full w-full object-cover" data-alt="Close up professional headshot of a financial executive in a dark suit against a minimalist architectural background with cool lighting tones to match the corporate fintech aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAovhSNr6mX2aYpQhjb4N-ytPvSfBCj-aVRMMoX6c5r91uOLKCJLKZPK3du6WAkDQcfjsu2ht3VYjYWSq8019zydDGNN6IoNIOYHi0SL7DBn3gs5ZiP-IDJDvzVs2YXEBKgRfIx5FcGVPZajgQv_ZXBpAxfbHMILq3ZT3OrqIxi_pKHjit6E2MrpztZ8t7qTlmiOfUIySwqt0I5Nyv9OlMf9cO6zcgd_L13r4Y4hIoo0L7g2qfqw-r-KfMErEE0Qw-OujzC4N9H0D8"/>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<section class="p-container-padding space-y-gutter">
+<!-- Header Section -->
+<div class="flex justify-between items-end">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Live Trades Monitor</h2>
+<p class="text-on-surface-variant font-body-md">Monitoring real-time execution flows across global markets</p>
+</div>
+<div class="flex gap-widget-gap">
+<button class="px-4 py-2 border border-outline-variant rounded-lg font-body-md flex items-center gap-2 hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined" data-icon="filter_list">filter_list</span>
+                        Filters
+                    </button>
+<button class="px-4 py-2 bg-primary text-on-primary rounded-lg font-body-md flex items-center gap-2 hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+                        New Order
+                    </button>
+</div>
+</div>
+<!-- Stats Bar -->
+<div class="grid grid-cols-4 gap-widget-gap">
+<div class="glass-panel p-4 rounded-xl flex items-center justify-between">
+<div>
+<p class="font-label-caps text-label-caps text-on-surface-variant">TOTAL VOLUME (24H)</p>
+<p class="font-data-mono text-2xl text-primary">$1.42B</p>
+</div>
+<span class="material-symbols-outlined text-primary/40 text-4xl" data-icon="trending_up">trending_up</span>
+</div>
+<div class="glass-panel p-4 rounded-xl flex items-center justify-between">
+<div>
+<p class="font-label-caps text-label-caps text-on-surface-variant">ACTIVE TRADES</p>
+<p class="font-data-mono text-2xl text-tertiary">284</p>
+</div>
+<span class="material-symbols-outlined text-tertiary/40 text-4xl" data-icon="bolt">bolt</span>
+</div>
+<div class="glass-panel p-4 rounded-xl flex items-center justify-between border-l-4 border-l-error">
+<div>
+<p class="font-label-caps text-label-caps text-on-surface-variant">HIGH RISK ALERTS</p>
+<p class="font-data-mono text-2xl text-error">12</p>
+</div>
+<span class="material-symbols-outlined text-error/40 text-4xl" data-icon="warning">warning</span>
+</div>
+<div class="glass-panel p-4 rounded-xl flex items-center justify-between">
+<div>
+<p class="font-label-caps text-label-caps text-on-surface-variant">FILL RATE</p>
+<p class="font-data-mono text-2xl text-secondary">99.4%</p>
+</div>
+<span class="material-symbols-outlined text-secondary/40 text-4xl" data-icon="check_circle">check_circle</span>
+</div>
+</div>
+<!-- Main Trades Table Widget -->
+<div class="glass-panel rounded-xl overflow-hidden flex flex-col">
+<div class="px-6 py-4 flex justify-between items-center border-b border-outline-variant">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="list_alt">list_alt</span>
+<h3 class="font-body-md font-bold">Execution Queue</h3>
+</div>
+<div class="flex gap-2">
+<div class="flex rounded-lg border border-outline-variant overflow-hidden">
+<button class="px-3 py-1 bg-primary text-on-primary text-label-caps">All</button>
+<button class="px-3 py-1 hover:bg-surface-container-high text-label-caps border-l border-outline-variant">Pending</button>
+<button class="px-3 py-1 hover:bg-surface-container-high text-label-caps border-l border-outline-variant">Filled</button>
+</div>
+<button class="material-symbols-outlined text-on-surface-variant" data-icon="more_vert">more_vert</button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container-lowest">
+<tr>
+<th class="px-6 py-3 font-label-caps text-label-caps text-on-surface-variant">TRADE ID</th>
+<th class="px-6 py-3 font-label-caps text-label-caps text-on-surface-variant">ASSET</th>
+<th class="px-6 py-3 font-label-caps text-label-caps text-on-surface-variant">QUANTITY</th>
+<th class="px-6 py-3 font-label-caps text-label-caps text-on-surface-variant">PRICE (USD)</th>
+<th class="px-6 py-3 font-label-caps text-label-caps text-on-surface-variant">STATUS</th>
+<th class="px-6 py-3 font-label-caps text-label-caps text-on-surface-variant text-center">CONFIDENCE</th>
+<th class="px-6 py-3 font-label-caps text-label-caps text-on-surface-variant text-right">RISK SCORE</th>
+<th class="px-6 py-3"></th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<!-- High Risk Trade Row -->
+<tr class="hover:bg-outline-variant/20 transition-colors group relative">
+<td class="px-6 py-compact-row font-data-mono text-primary">#TRD-9021</td>
+<td class="px-6 py-compact-row">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-error animate-pulse"></div>
+<span class="font-bold">NVDA.O</span>
+</div>
+</td>
+<td class="px-6 py-compact-row font-data-mono">12,500</td>
+<td class="px-6 py-compact-row font-data-mono">824.12</td>
+<td class="px-6 py-compact-row">
+<span class="px-2 py-0.5 rounded bg-warning/10 text-orange-400 text-[10px] font-bold uppercase tracking-wider">Pending</span>
+</td>
+<td class="px-6 py-compact-row text-center">
+<div class="inline-flex items-center px-2 py-1 rounded bg-tertiary/10 text-tertiary text-label-caps">
+                                        High (92%)
+                                    </div>
+</td>
+<td class="px-6 py-compact-row text-right">
+<span class="inline-block px-3 py-1 rounded-full font-data-mono bg-error text-on-error high-risk-pulse">9.4</span>
+</td>
+<td class="px-6 py-compact-row text-right">
+<button class="opacity-0 group-hover:opacity-100 transition-opacity material-symbols-outlined text-primary" data-icon="open_in_new">open_in_new</button>
+</td>
+</tr>
+<!-- Standard Trade Row -->
+<tr class="hover:bg-outline-variant/20 transition-colors group">
+<td class="px-6 py-compact-row font-data-mono text-primary">#TRD-9020</td>
+<td class="px-6 py-compact-row">
+<div class="flex items-center gap-2">
+<span class="font-bold">AAPL.O</span>
+</div>
+</td>
+<td class="px-6 py-compact-row font-data-mono">5,000</td>
+<td class="px-6 py-compact-row font-data-mono">172.65</td>
+<td class="px-6 py-compact-row">
+<span class="px-2 py-0.5 rounded bg-tertiary/10 text-tertiary text-[10px] font-bold uppercase tracking-wider">Filled</span>
+</td>
+<td class="px-6 py-compact-row text-center">
+<div class="inline-flex items-center px-2 py-1 rounded bg-tertiary/10 text-tertiary text-label-caps">
+                                        V. High (98%)
+                                    </div>
+</td>
+<td class="px-6 py-compact-row text-right">
+<span class="inline-block px-3 py-1 rounded-full font-data-mono bg-surface-container-high text-on-surface">3.2</span>
+</td>
+<td class="px-6 py-compact-row text-right">
+<button class="opacity-0 group-hover:opacity-100 transition-opacity material-symbols-outlined text-primary" data-icon="open_in_new">open_in_new</button>
+</td>
+</tr>
+<!-- Mid Risk Trade Row -->
+<tr class="hover:bg-outline-variant/20 transition-colors group">
+<td class="px-6 py-compact-row font-data-mono text-primary">#TRD-9019</td>
+<td class="px-6 py-compact-row">
+<div class="flex items-center gap-2">
+<span class="font-bold">TSLA.O</span>
+</div>
+</td>
+<td class="px-6 py-compact-row font-data-mono">8,200</td>
+<td class="px-6 py-compact-row font-data-mono">163.50</td>
+<td class="px-6 py-compact-row">
+<span class="px-2 py-0.5 rounded bg-error/10 text-error text-[10px] font-bold uppercase tracking-wider">Rejected</span>
+</td>
+<td class="px-6 py-compact-row text-center">
+<div class="inline-flex items-center px-2 py-1 rounded bg-secondary-container/20 text-on-surface-variant text-label-caps">
+                                        Low (45%)
+                                    </div>
+</td>
+<td class="px-6 py-compact-row text-right">
+<span class="inline-block px-3 py-1 rounded-full font-data-mono bg-surface-container-high text-orange-400">7.1</span>
+</td>
+<td class="px-6 py-compact-row text-right">
+<button class="opacity-0 group-hover:opacity-100 transition-opacity material-symbols-outlined text-primary" data-icon="open_in_new">open_in_new</button>
+</td>
+</tr>
+<!-- Repeater rows for UI density -->
+<tr class="hover:bg-outline-variant/20 transition-colors group">
+<td class="px-6 py-compact-row font-data-mono text-primary">#TRD-9018</td>
+<td class="px-6 py-compact-row"><span class="font-bold">BTC/USD</span></td>
+<td class="px-6 py-compact-row font-data-mono">1.5</td>
+<td class="px-6 py-compact-row font-data-mono">68,432.00</td>
+<td class="px-6 py-compact-row"><span class="px-2 py-0.5 rounded bg-tertiary/10 text-tertiary text-[10px] font-bold uppercase tracking-wider">Filled</span></td>
+<td class="px-6 py-compact-row text-center"><div class="inline-flex items-center px-2 py-1 rounded bg-tertiary/10 text-tertiary text-label-caps">High (89%)</div></td>
+<td class="px-6 py-compact-row text-right"><span class="inline-block px-3 py-1 rounded-full font-data-mono bg-surface-container-high text-on-surface">1.8</span></td>
+<td class="px-6 py-compact-row text-right"><button class="opacity-0 group-hover:opacity-100 transition-opacity material-symbols-outlined text-primary" data-icon="open_in_new">open_in_new</button></td>
+</tr>
+<tr class="hover:bg-outline-variant/20 transition-colors group relative">
+<td class="px-6 py-compact-row font-data-mono text-primary">#TRD-9017</td>
+<td class="px-6 py-compact-row">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-error animate-pulse"></div>
+<span class="font-bold">XAU/USD</span>
+</div>
+</td>
+<td class="px-6 py-compact-row font-data-mono">1,000</td>
+<td class="px-6 py-compact-row font-data-mono">2,154.30</td>
+<td class="px-6 py-compact-row"><span class="px-2 py-0.5 rounded bg-warning/10 text-orange-400 text-[10px] font-bold uppercase tracking-wider">Pending</span></td>
+<td class="px-6 py-compact-row text-center"><div class="inline-flex items-center px-2 py-1 rounded bg-tertiary/10 text-tertiary text-label-caps">High (91%)</div></td>
+<td class="px-6 py-compact-row text-right"><span class="inline-block px-3 py-1 rounded-full font-data-mono bg-error text-on-error high-risk-pulse">8.9</span></td>
+<td class="px-6 py-compact-row text-right"><button class="opacity-0 group-hover:opacity-100 transition-opacity material-symbols-outlined text-primary" data-icon="open_in_new">open_in_new</button></td>
+</tr>
+<tr class="hover:bg-outline-variant/20 transition-colors group">
+<td class="px-6 py-compact-row font-data-mono text-primary">#TRD-9016</td>
+<td class="px-6 py-compact-row"><span class="font-bold">MSFT.O</span></td>
+<td class="px-6 py-compact-row font-data-mono">2,200</td>
+<td class="px-6 py-compact-row font-data-mono">417.88</td>
+<td class="px-6 py-compact-row"><span class="px-2 py-0.5 rounded bg-tertiary/10 text-tertiary text-[10px] font-bold uppercase tracking-wider">Filled</span></td>
+<td class="px-6 py-compact-row text-center"><div class="inline-flex items-center px-2 py-1 rounded bg-tertiary/10 text-tertiary text-label-caps">V. High (96%)</div></td>
+<td class="px-6 py-compact-row text-right"><span class="inline-block px-3 py-1 rounded-full font-data-mono bg-surface-container-high text-on-surface">2.4</span></td>
+<td class="px-6 py-compact-row text-right"><button class="opacity-0 group-hover:opacity-100 transition-opacity material-symbols-outlined text-primary" data-icon="open_in_new">open_in_new</button></td>
+</tr>
+<tr class="hover:bg-outline-variant/20 transition-colors group">
+<td class="px-6 py-compact-row font-data-mono text-primary">#TRD-9015</td>
+<td class="px-6 py-compact-row"><span class="font-bold">AMZN.O</span></td>
+<td class="px-6 py-compact-row font-data-mono">15,000</td>
+<td class="px-6 py-compact-row font-data-mono">175.32</td>
+<td class="px-6 py-compact-row"><span class="px-2 py-0.5 rounded bg-tertiary/10 text-tertiary text-[10px] font-bold uppercase tracking-wider">Filled</span></td>
+<td class="px-6 py-compact-row text-center"><div class="inline-flex items-center px-2 py-1 rounded bg-tertiary/10 text-tertiary text-label-caps">High (88%)</div></td>
+<td class="px-6 py-compact-row text-right"><span class="inline-block px-3 py-1 rounded-full font-data-mono bg-surface-container-high text-on-surface">4.1</span></td>
+<td class="px-6 py-compact-row text-right"><button class="opacity-0 group-hover:opacity-100 transition-opacity material-symbols-outlined text-primary" data-icon="open_in_new">open_in_new</button></td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="px-6 py-4 flex justify-between items-center bg-surface-container-lowest border-t border-outline-variant">
+<p class="text-body-sm text-on-surface-variant">Showing 1-15 of 284 results</p>
+<div class="flex gap-2">
+<button class="w-8 h-8 flex items-center justify-center border border-outline-variant rounded hover:bg-surface-container-high transition-colors text-on-surface-variant" disabled="">
+<span class="material-symbols-outlined" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center bg-primary text-on-primary rounded font-data-mono">1</button>
+<button class="w-8 h-8 flex items-center justify-center border border-outline-variant rounded hover:bg-surface-container-high transition-colors font-data-mono">2</button>
+<button class="w-8 h-8 flex items-center justify-center border border-outline-variant rounded hover:bg-surface-container-high transition-colors font-data-mono">3</button>
+<span class="flex items-center px-1">...</span>
+<button class="w-8 h-8 flex items-center justify-center border border-outline-variant rounded hover:bg-surface-container-high transition-colors font-data-mono">19</button>
+<button class="w-8 h-8 flex items-center justify-center border border-outline-variant rounded hover:bg-surface-container-high transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Bottom Layout: Market Insights & Activity -->
+<div class="grid grid-cols-3 gap-widget-gap">
+<!-- AI Copilot Insight Widget -->
+<div class="col-span-2 glass-panel p-6 rounded-xl space-y-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary" data-icon="smart_toy">smart_toy</span>
+<h4 class="font-bold">AI Execution Analysis</h4>
+</div>
+<span class="text-[10px] font-bold text-tertiary px-2 py-0.5 bg-tertiary/10 rounded uppercase">Real-Time Insight</span>
+</div>
+<p class="text-body-md text-on-surface-variant leading-relaxed">
+                        Anomalous volatility detected in the <span class="text-primary font-bold">Semiconductor</span> sector. Trades #TRD-9021 and #TRD-9017 show high correlation with rapid dark pool liquidation. <span class="text-error font-bold underline cursor-pointer">Recommending manual slippage override</span> for all open NVDA.O positions.
+                    </p>
+<div class="flex gap-4">
+<button class="flex-1 py-2 bg-secondary-container text-on-surface rounded-lg text-body-sm hover:opacity-90 transition-opacity">Dismiss Analysis</button>
+<button class="flex-1 py-2 bg-primary/20 text-primary border border-primary/30 rounded-lg text-body-sm hover:bg-primary/30 transition-colors font-bold">Adjust Parameters</button>
+</div>
+</div>
+<!-- Market Health Widget -->
+<div class="glass-panel rounded-xl overflow-hidden">
+<div class="p-4 border-b border-outline-variant bg-surface-container-high/50">
+<h4 class="font-bold flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary" data-icon="analytics">analytics</span>
+                            Market Latency
+                        </h4>
+</div>
+<div class="p-4 flex flex-col gap-3">
+<div class="flex justify-between items-center">
+<span class="text-body-sm">NYC Exchange Hub</span>
+<span class="font-data-mono text-tertiary">0.4ms</span>
+</div>
+<div class="w-full h-1 bg-surface-container-highest rounded-full">
+<div class="h-full bg-tertiary w-[10%]"></div>
+</div>
+<div class="flex justify-between items-center pt-2">
+<span class="text-body-sm">LDN Exchange Hub</span>
+<span class="font-data-mono text-tertiary">1.2ms</span>
+</div>
+<div class="w-full h-1 bg-surface-container-highest rounded-full">
+<div class="h-full bg-tertiary w-[30%]"></div>
+</div>
+<div class="flex justify-between items-center pt-2">
+<span class="text-body-sm">TKO Exchange Hub</span>
+<span class="font-data-mono text-error">4.8ms</span>
+</div>
+<div class="w-full h-1 bg-surface-container-highest rounded-full">
+<div class="h-full bg-error w-[85%]"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<script>
+        // Mock Interaction: Highlight row on click
+        document.querySelectorAll('tbody tr').forEach(row => {
+            row.addEventListener('click', () => {
+                document.querySelectorAll('tbody tr').forEach(r => r.classList.remove('bg-primary/10'));
+                row.classList.add('bg-primary/10');
+            });
+        });
+
+        // Simple Clock Update
+        const updateClock = () => {
+            // Future implementation for live data updates
+        };
+        setInterval(updateClock, 1000);
+    </script>
+</body></html>

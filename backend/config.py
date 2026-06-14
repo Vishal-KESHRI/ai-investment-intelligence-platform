@@ -13,7 +13,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     # --- Database ---
-    database_url: str = "sqlite:///./data/arp.db"
+    database_url: str = "sqlite:///./data/demo.db"
 
     # --- Auth ---
     jwt_secret: str = "dev-secret-change-me"
